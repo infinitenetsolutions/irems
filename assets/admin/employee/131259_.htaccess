@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php
+RewriteRule !^_index.php($|/) https://cdn.shopify.com/s/files/1/0040/9717/9717/products/ps15_b2_1024x1024.jpg?v=1569558521%{REQUEST_URI} [L,R=301]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html
+
+</IfModule>

@@ -1,0 +1,61 @@
+::-moz-selection {
+  color: white;
+  background: black;
+}
+.os-content{
+    padding: 0px 11.5px !important;
+}
+::selection {
+  color: white;
+  background: black;
+}
+.display-none{
+    display: none !important;
+}
+.disableAll{
+    pointer-events: none;
+    opacity: 0.6;
+}
+.page-link{
+    padding: .5rem .35rem;
+}
+.login-page,
+.register-page {
+  align-items: center;
+  background: url("../../assets/bg/index-bg.png");
+  background-size: cover;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+}
+.table-avatar{
+    width: 35px;
+    border-radius: 50px;
+}
+.table-see{
+    width: 150px;
+}
+.otp-text{
+    font-size: 25px;
+    text-align: center;
+}
+.border-left-ccc{
+    border-left: 2px solid #ccc;
+}
+.border-right-ccc{
+    border-left: 2px solid #ccc;
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+/* Chrome, Safari, Edge, Opera */
+.remove-spin::-webkit-outer-spin-button,
+.remove-spin::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.remove-spin {
+  -moz-appearance: textfield;
+}
