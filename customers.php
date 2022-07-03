@@ -202,14 +202,15 @@
                                                         <select id="propertyCarParkings" name="propertyCarParkings" class="form-control form-control-sm select2 select2-navy" data-dropdown-css-class="select2-navy">
                                                             <option value="No">No</option>
                                                             <option value="Yes">Yes</option>
-                                                            divCarParkingAmount</select>
+                                                            </select>
                                                     </div>
                                                 </div>
 
-                                                <div id="divCarParkingAmount" class="col-md-4 display-none">
+                                                <div id="divCarParkingArea" class="col-md-4 display-none">
                                                     <div class="form-group">
                                                         <label for="CarParkingArea">Car Parking Area</label>
-                                                        <select id="propertyCarParkings" name="CarParkingArea" class="form-control form-control-sm select2 select2-navy" data-dropdown-css-class="select2-navy">
+                                                        <select id="propertyCarArea" name="CarParkingArea" class="form-control form-control-sm select2 select2-navy" data-dropdown-css-class="select2-navy">
+                                                            <option value="">Select</option>
                                                             <option value="1">1</option>
                                                             <option value="2">2</option>
                                                             <option value="2">3</option>

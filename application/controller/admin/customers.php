@@ -39,6 +39,7 @@
                                                 "flat_no"                   =>      $_POST["flat_no"],
                                                 "propertyPriceDeal"         =>      htmlspecialchars($_POST["propertyPriceDeal"], ENT_QUOTES),
                                                 "propertyCarParkings"       =>      htmlspecialchars($_POST["propertyCarParkings"], ENT_QUOTES),
+                                                "propertyCarArea"       =>          htmlspecialchars($_POST["propertyCarArea"], ENT_QUOTES),
                                                 "CarParkingAmount"          =>      htmlspecialchars($_POST["CarParkingAmount"], ENT_QUOTES),
                                                 "propertyScooterParkings"   =>      htmlspecialchars($_POST["propertyScooterParkings"], ENT_QUOTES),
                                                 "ScooterParkingAmount"      =>      htmlspecialchars($_POST["ScooterParkingAmount"], ENT_QUOTES)

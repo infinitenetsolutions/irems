@@ -1647,10 +1647,20 @@ $(document).on("click change keyup", ".calculate-this", function(){
     $("#propertyCarParkings").change(function () {
         if($("#propertyCarParkings").val() == "No"){
             $("#divCarParkingAmount").addClass("display-none");
-            $("#divCarParkingArea").addClass("display-none");
         } else{
-            $("#divCarParkingAmount").removeClass("display-none");
+            $("#divCarParkingArea").removeClass("display-none");
         }
+    });
+
+
+    $("#propertyCarArea").change(function () {
+
+        $("#divCarParkingAmount").removeClass("display-none");  
+        // if($("#propertyCarParkings").val() == "No"){
+        //     $("#divCarParkingAmount").addClass("display-none");
+        // } else{
+        //     $("#divCarParkingArea").removeClass("display-none");
+        // }
     });
 // Car parking On Selection Of Amount Section End ---------------------------------------------------------------------------------- 
 // Scooter parking On Selection Of Amount Section Start -------------------------------------------------------------------------------- 
