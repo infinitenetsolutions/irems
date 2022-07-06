@@ -1560,7 +1560,7 @@ calculateAmount = function() {
 }
 
 
-$(document).on("click change keyup", ".calculate-this", function(){
+$(document).on("change keyup", ".calculate-this", function(){
     const Toast = Swal.mixin({
       toast: true,
       position: 'top-end',

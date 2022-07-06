@@ -467,6 +467,16 @@
                                 </p>
                            </a>
                         </li>
+
+
+                        <li class="nav-item has-treeview display-none data-page-class" data-page="page_no_12">
+                            <a href="manage-maintainance" class="nav-link <?php if($page_no == "12"){ echo 'active'; } ?>" target="_blank">
+                            <i class="nav-icon fas fa-poll-h"></i>
+                                <p>
+                                    Manage Maintenance
+                                </p>
+                           </a>
+                        </li>
                         
                         <?php if($auth->admin_info->name != 'Admin') {
                              $admin_id =  $auth->employee_id; ?>

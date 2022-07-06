@@ -433,6 +433,7 @@
                         if($getData != 0):
                             foreach($getData as $rows):
                                 $customer_payment_structure = json_decode($rows["customer_payment_structure"]);
+                                $customer_extra_payment_structure = json_decode($rows["customer_extra_payment_structure"]);
                                 $customer_property_info = json_decode($rows["customer_property_info"]);
                                 ?>
                                     <div class="row">
@@ -535,6 +536,107 @@
                                         <input type="hidden" value="<?= --$noOfRows ?>" id="editTotalNumberOfDivision" name="editTotalNumberOfDivision" />
                                         <input type="hidden" id="editTableId" name="editTableId" value="<?= $_POST["id"] ?>" />
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-12 table-responsive">
+                                            <input type="hidden" id="propertyPriceDealForStructure" name="propertyPriceDealForStructure" value="<?= $customer_property_info->propertyPriceDeal ?>" />
+                                            <table class="table table-bordered table-striped dataTable" id="edit_dynamic_field">
+                                                <thead>
+                                                    <th>S. No.</th>
+                                                    <th>Percentage Of Amount</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Remark</th>
+                                                    <th>Action</th>
+
+                                                </thead>
+                                                <tbody>
+                                                    <?php 
+                                                        $noOfRows = 1;
+                                                        $checkPaid = "";
+                                                        foreach($customer_payment_structure as $customer_payment_structure_all):
+                                                            $checkPaid = "";
+                                                            if($customer_payment_structure_all->paymentStuctureStatus == "paid"):
+                                                                $checkPaid = "disabled";
+                                                                $checkPaidCount = $noOfRows;
+                                                                $checkPaidCount--;
+                                                                ?>
+                                                                    <input name="paymentStucturePaid[<?= $checkPaidCount ?>]" type="hidden" value="<?= $customer_payment_structure_all->paymentStucturePaid ?>" />
+                                                                    <input name="paymentStucturePaidRemark[<?= $checkPaidCount ?>]" type="hidden" value="<?= $customer_payment_structure_all->paymentStucturePaidRemark ?>" />
+                                                                    <input name="paymentStuctureStatus[<?= $checkPaidCount ?>]" type="hidden" value="<?= $customer_payment_structure_all->paymentStuctureStatus ?>" />
+                                                                <?php
+                                                            endif;
+                                                    ?>
+                                                    <?php 
+                                                        if($noOfRows == 1):
+                                                    ?>
+                                                        <tr>
+                                                    <?php 
+                                                        else:
+                                                    ?>
+                                                        <tr id="row<?= $noOfRows."_".$rows["customer_id"] ?>" class="dynamic-added" >
+                                                    <?php 
+                                                        endif;
+                                                    ?>
+                                                        <td><span class="p-3 mt-2"><?= $noOfRows ?>.</span></td>
+                                                        <td>
+                                                            <div class="form-group mb-0">
+                                                                <div class="input-group" style="width:150px;">
+                                                                    <input id="paymentStuctureCompletion<?= $noOfRows."_".$rows["customer_id"] ?>" name="paymentStuctureCompletion[]" type="number" min="0.00" step=any class="form-control form-control-sm " onclick="calculateAmountEdit();" onkeyup="calculateAmountEdit();" value="<?= $customer_payment_structure_all->paymentStuctureCompletion ?>" <?= $checkPaid ?> title="<?= ucwords($customer_payment_structure_all->paymentStuctureStatus) ?>"/>
+                                                                    <div class="input-group-prepend">
+                                                                        <button type="button" class="btn btn-danger">%</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group mb-0">
+                                                                <div class="input-group" style="width:200px;">
+                                                                 <div class="input-group-prepend">
+                                                                        <button type="button" class="btn btn-danger">&#8377;</button>
+                                                                    </div>
+                                                                    <input id="paymentStuctureAmount<?= $noOfRows."_".$rows["customer_id"] ?>" name="paymentStuctureAmount[]" type="number" min="0.00" step=any class="form-control form-control-sm " onclick="calculatePercentageEdit();" onkeyup="calculatePercentageEdit();"  value="<?= $customer_payment_structure_all->paymentStuctureAmount ?>" <?= $checkPaid ?> title="<?= ucwords($customer_payment_structure_all->paymentStuctureStatus) ?>"/>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                         <td>
+                                                            <div class="form-group mb-0">
+                                                                  <select class="form-control form-control-sm"  name="paymentStuctureStatus[]" id="paymentStuctureStatus<?= $noOfRows."_".$rows["customer_id"] ?>" style="width:130px;" <?= ($customer_payment_structure_all->paymentStuctureStatus=='paid'?'disabled':'');?> >
+                                                                    <option value="" <?= ($customer_payment_structure_all->paymentStuctureStatus==''?'selected':'');?> >Select Status</option>
+                                                                    <option value="paid" <?= ($customer_payment_structure_all->paymentStuctureStatus=='paid'?'selected':'');?> >Paid</option>
+                                                                  </select>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group mb-0">
+                                                                <input id="paymentStuctureRemark<?= $noOfRows."_".$rows["customer_id"] ?>" name="paymentStuctureRemark[]" type="text" class="form-control form-control-sm " onclick="calculatePercentageEdit();" onkeyup="calculatePercentageEdit();" onclick="calculateAmountEdit();" onkeyup="calculateAmountEdit();" style="width:200px;" value="<?= $customer_payment_structure_all->paymentStuctureRemark ?>" <?= $checkPaid ?> title="<?= ucwords($customer_payment_structure_all->paymentStuctureStatus) ?>"/>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <?php 
+                                                                if($noOfRows == 1):
+                                                            ?>
+                                                                    <button type="button" name="editAdd" onclick="calculateAmountEdit();" onkeyup="calculateAmountEdit();" onclick="calculatePercentageEdit();" onkeyup="calculatePercentageEdit();"id="editAdd" class="btn btn-warning"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                            <?php 
+                                                                else:
+                                                            ?>
+                                                                    <button type="button" name="remove" onclick="calculateAmountEdit();" onkeyup="calculateAmountEdit();" onclick="calculatePercentageEdit();" onkeyup="calculatePercentageEdit();" id="<?= $noOfRows."_".$rows["customer_id"] ?>" class="btn btn-danger btn_remove">X</button>
+                                                            <?php 
+                                                                endif;
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                    <?php 
+                                                            $noOfRows++;
+                                                        endforeach;
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                             <h5> Deal Amount : <?= (!empty($customer_property_info->propertyPriceDeal)?$customer_property_info->propertyPriceDeal.' &#8377;':'No Amount')?> </h5>
+                                        </div>
+                                        <input type="hidden" value="<?= --$noOfRows ?>" id="editTotalNumberOfDivision" name="editTotalNumberOfDivision" />
+                                        <input type="hidden" id="editTableId" name="editTableId" value="<?= $_POST["id"] ?>" />
+                                    </div>
+
                                     <script>
                                         // Calculate Percentage Section Start ---------------------------------------------------------------------------------------------------
                                         function calculateAmountEdit() {
@@ -752,6 +854,9 @@
                             </div>
                             <?php
                         endif;
+
+
+
                     else:
                         ?>
                         <div class="alert alert-danger alert-dismissible">

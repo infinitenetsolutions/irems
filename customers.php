@@ -978,8 +978,7 @@
     <!-- Js Section Start -->
     <?php require_once("include/js.php");?>
     <script src="dist/js/ajax.js"></script>
-    <script src="dist/js/admin/customers.js"></script>
-     <!--<script>
+0     <!--<script>
         $(function(){
             //Multiple Rows Section Start ------------------------------------------------------------------------------------------------------------------   
             var k=1;  

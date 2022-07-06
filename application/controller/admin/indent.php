@@ -12,10 +12,7 @@
     $randSix = $auth->randSix();
     $authority = 1;
     $manageItemDir = "../../../assets/admin/manage-items/";
-    // echo "<pre>";
-    // print_r($_POST);
-    // echo "</pre>";
-    // exit(0);
+    
     if(isset($_POST["action"])):
         // -----------------------------------
         // ------------ Switch Start --------- 
@@ -28,8 +25,6 @@
             case "addIndent":
 
                 
-                                  echo "<pre>";
-                                 print_r($_POST); 
                                     if (!empty($_POST["indentNo"] && $_POST["indentDate"])):
                                         $slashNandR =  array("\n", "\r");
                                          $item_info = array();
@@ -66,11 +61,6 @@
                                                         "item_info" => $item_info
                                                     );
 
-
-                                                   //echo "<pre>";
-                                                   //print_r($indent_info); exit;
-
-                           
 
                                                 $item_log = array(
                                                                     array(
@@ -234,14 +224,9 @@
                 // endif;
                 break;
                 // ET["approveTableId");
-            // echo "<pre>";
-            // print_r($_POST);
-            // echo "</pre>";
-            // exit(0);
+            
             case "approveIndent":
-                  echo "<pre>";
-                  print_r($_POST);
-                 // echo "</pre>";
+             
                
                         if(!empty($_POST["approveTableId"])):
                         $databaseObj->select("tbl_manage_indent");
@@ -274,10 +259,7 @@
 
                                                   array_push($item_info, $temp_item);
                                                endfor;
-                                            // echo "<pre>";
-                                            //  print_r($_POST);
-                                            //  echo "</pre>";
-                                             // exit(0);
+                                           
                                                $indent_info = array(
                                                               "indentNo" => htmlspecialchars(str_replace($slashNandR, "", $_POST["indentNo"]), ENT_QUOTES),
                                                               "indentDate" => htmlspecialchars(str_replace($slashNandR, "", $_POST["indentDate"]), ENT_QUOTES),
@@ -302,9 +284,7 @@
                                                               
                                                               "item_info" => $item_info
                                                           );
-                                                                                                   
-                                             // print_r($item_info);
-                                             // echo "</pre>";
+                                            
 
                                                        
                                                       $item_log = array(
