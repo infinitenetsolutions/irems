@@ -1,7 +1,7 @@
 <!-- Employee Management -->
 <?php     
     $page_no = "12";    
-    
+    $page_no_inside = "12";  
 ?>
 <?php require_once("include/auth.php"); ?>
 <!DOCTYPE html>
