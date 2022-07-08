@@ -1,0 +1,1523 @@
+<?php
+require_once("../../classes-and-objects/config.php");
+require_once("../../classes-and-objects/veriables.php");
+require_once("../../classes-and-objects/authentication.php");
+require_once("../../classes-and-objects/PHPExcel/PHPExcel.php");
+include '../../../framwork/main.php';
+$auth = new AUTHENTICATION($databaseObj);
+$objPHPExcel = new PHPExcel();
+$defaultLogo = "assets/dp/default.png";
+$randSix = $auth->randSix();
+$authority = 1;
+
+
+if (isset($_POST["action"])) :
+    // ----------------------------------
+    // ------------ Switch Start ---------
+    // -----------------------------------
+    switch ($_POST["action"]):
+            // -----------------------------------------------
+            // ------------ Fetch Data Section Start ---------
+            // -----------------------------------------------
+        case "fetchData":
+?>
+            <form id="selectForm" method="POST" enctype="multipart/form-data" action="">
+                <input type="hidden" id="nameOfATable" name="nameOfATable" value="tbl_manage_employee">
+                <input type="hidden" id="action" name="action" value="exportSelectedData">
+                <table id="example1" class="table table-bordered table-striped">
+
+                    <thead>
+                        <tr>
+                           
+                            <th>S.No.</th>
+                            <th>Invoice No</th>
+                            <th>Invoice Date</th>
+                            <th>Project Name</th>
+                            <th>Customer Name</th>
+                            <th>Bill Due Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $databaseObj->select("tbl_maintenance");
+                        $databaseObj->order_by("`m_id` DESC");
+                        $getData = $databaseObj->get();
+
+                        //Checking If Data Is Available
+                        if ($getData != 0) :
+                            $sno = 1;
+                            foreach ($getData as $rows) :
+
+
+                        ?>
+                                <tr>
+                                   
+                                    <td><?= $sno ?>.</td>
+                                    <td><?= $rows['invoice_no'] ?></td>
+                                    <td><?= $rows['invoice_date'] ?></td>
+                                   <?php
+                                     $databaseObj->select("tbl_projects");
+                                     $databaseObj->where("`status` = '" . $auth->visible() . "' && `projects_id` = '" . $rows['project_id'] . "'");
+                                     $getData = $databaseObj->get();
+                                    
+                                    if ($getData != 0) :
+                                        foreach ($getData as $rows_proj) :
+                                            $manage_project_info = json_decode($rows_proj["projects_info"]);
+                                             
+                                        endforeach;
+                                    endif;
+                                    ?>
+
+                                   <td><?= $manage_project_info->projectName ?></td>
+
+                                    <?php
+                                    $databaseObj->select("tbl_customer");
+                                    $databaseObj->where("`status` = '" . $auth->visible() . "' && `customer_id` = '" . $rows['customer_id'] . "'");
+                                    $getData = $databaseObj->get();
+                                    // echo "<pre>";
+                                    // print_r($getData);
+                                    if ($getData != 0) :
+                                        foreach ($getData as $rows_cus) :
+                                            $manage_customer_info = json_decode($rows_cus["customer_info"]);
+                                        endforeach;
+                                    endif;
+                                    ?>
+
+
+
+                                    <td><?= $manage_customer_info->name ?></td>
+                                    <td><?= $rows['bill_due_date'] ?></td>
+
+                                    <td class="text-center">
+                                     
+                                       
+                                        <!-- <button type="button" id="edit-button-<?= $rows["m_id"] ?>" class="edit-button btn btn-xs btn-warning mt-1 mb-1" title="Edit/Update">
+                                            <i class="fa fa-edit fa-sm"></i>
+                                        </button> -->
+                                        
+                                        <a href="./print_bill_view.php?invoice_no=<?php echo $rows['invoice_no']; ?>" target="_blank" class="edit-button btn btn-xs btn-warning mt-1 mb-1" class="edit-button btn btn-xs btn-warning mt-1 mb-1"><i class="fa fa-print fa-sm"></i></a>
+
+
+                                        <!-- <button type="button" id="delete-button-<?= $rows["m_id"] ?>" class="delete-button btn btn-xs btn-danger mt-1 mb-1" title="Delete">
+                                            <i class="fa fa-trash fa-sm"></i>
+                                        </button> -->
+                                    </td>
+                                </tr>
+                                <script>
+                                    // Information Section Start ---------------------------------------------------------------
+                                    $("#information-button-<?= $rows["manage_employee_id"] ?>").click(function() {
+                                        $("#information-modal").modal('show');
+                                        $('#information-section').html('<center id = "information-loading"><img width="80px" src = "assets/loader/pre-loader.gif" alt="Loading..." /></center>');
+                                        var formData = {
+                                            "action": "fetchInformation",
+                                            "id": "<?= $rows["manage_employee_id"] ?>"
+                                        };
+                                        $.ajax({
+                                            url: 'application/view/admin/manage-employees.php',
+                                            type: 'POST',
+                                            data: formData,
+                                            success: function(data) {
+                                                $('#information-loading').fadeOut(500, function() {
+                                                    $(this).remove();
+                                                    $('#information-section').html(data);
+                                                });
+                                            }
+                                        });
+                                    });
+                                    // Information Section End -----------------------------------------------------------------
+                                    // See Section Start ---------------------------------------------------------------
+                                    $("#see-button-<?= $rows["manage_employee_id"] ?>").click(function() {
+                                        $("#see-modal").modal('show');
+                                        $('#see-section').html('<center id = "see-loading"><img width="80px" src = "assets/loader/pre-loader.gif" alt="Loading..." /></center>');
+                                        var formData = {
+                                            "action": "fetchSee",
+                                            "id": "<?= $rows["manage_employee_id"] ?>"
+                                        };
+                                        $.ajax({
+                                            url: 'application/view/admin/manage-employees.php',
+                                            type: 'POST',
+                                            data: formData,
+                                            success: function(data) {
+                                                $('#see-loading').fadeOut(500, function() {
+                                                    $(this).remove();
+                                                    $('#see-section').html(data);
+                                                });
+                                            }
+                                        });
+                                    });
+                                    // See Section End -----------------------------------------------------------------
+                                    // Edit Section Start ---------------------------------------------------------------
+                                    $("#edit-button-<?= $rows["manage_employee_id"] ?>").click(function() {
+                                        $("#edit-modal").modal('show');
+                                        $('#edit-section').html('<center id = "edit-loading"><img width="80px" src = "assets/loader/pre-loader.gif" alt="Loading..." /></center>');
+                                        var formData = {
+                                            "action": "fetchEdit",
+                                            "id": "<?= $rows["manage_employee_id"] ?>"
+                                        };
+                                        $.ajax({
+                                            url: 'application/view/admin/manage-employees.php',
+                                            type: 'POST',
+                                            data: formData,
+                                            success: function(data) {
+                                                $('#edit-loading').fadeOut(500, function() {
+                                                    $(this).remove();
+                                                    $('#edit-section').html(data);
+                                                });
+                                            }
+                                        });
+                                    });
+                                    // Edit Section End -----------------------------------------------------------------
+                                    // Delete Section Start ---------------------------------------------------------------
+                                    $("#delete-button-<?= $rows["manage_employee_id"] ?>").click(function() {
+                                        $("#delete-modal").modal('show');
+                                        $('#deleteButton').prop('disabled', true);
+                                        $('#delete-section').html('<center id = "delete-loading"><img width="80px" src = "assets/loader/pre-loader.gif" alt="Loading..." /></center>');
+                                        var formData = {
+                                            "action": "fetchDelete",
+                                            "id": "<?= $rows["manage_employee_id"] ?>"
+                                        };
+                                        $.ajax({
+                                            url: 'application/view/admin/manage-employees.php',
+                                            type: 'POST',
+                                            data: formData,
+                                            success: function(data) {
+                                                $('#delete-loading').fadeOut(500, function() {
+                                                    $(this).remove();
+                                                    $('#delete-section').html(data);
+                                                    $('#deleteButton').prop('disabled', false);
+                                                });
+                                            }
+                                        });
+                                    });
+                                    // Delete Section End -----------------------------------------------------------------
+                                </script>
+                        <?php
+                                $sno++;
+                            endforeach;
+                        endif;
+                        ?>
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </form>
+            <script>
+                $('#add-button').prop('disabled', false);
+                $('#import-button').prop('disabled', false);
+            </script>
+            <script src="dist/js/admin/for-all-tables.js"></script>
+            <?php
+            break;
+            // -----------------------------------------------
+            // ------------ Fetch Data Section End -----------
+            // -----------------------------------------------
+            // ------------------------------------------------------
+            // ------------ Fetch Information Section Start ---------
+            // ------------------------------------------------------
+        case "fetchInformation":
+            if ($authority == 1) :
+                if (isset($_POST["id"]) && !empty($_POST["id"])) :
+                    $databaseObj->select("tbl_manage_employee");
+                    $databaseObj->where("`status` = '" . $auth->visible() . "' && `manage_employee_id` = '" . $_POST["id"] . "'");
+                    $databaseObj->order_by("`manage_employee_id` DESC");
+                    $getData = $databaseObj->get();
+                    //Checking If Data Is Available
+                    if ($getData != 0) :
+                        foreach ($getData as $rows) :
+                            $manage_employee_log = json_decode($rows["manage_employee_log"]);
+            ?>
+                            <div class="row">
+                                <?php
+                                $sno = 1;
+                                foreach ($manage_employee_log as $manage_employee_log_info) :
+                                ?>
+                                    <div class="col-md-12">
+                                        <div class="card">
+                                            <div class="card-header d-flex p-0">
+                                                <ul class="nav nav-pills ml-auto p-2">
+                                                    <li class="nav-item"><a class="nav-link" href="#tab_4_<?= $sno ?>" data-toggle="tab"><?= ucfirst($manage_employee_log_info->action) ?> By</a></li>
+                                                    <li class="nav-item"><a class="nav-link active" href="#tab_1_<?= $sno ?>" data-toggle="tab">Date/Time</a></li>
+                                                    <li class="nav-item"><a class="nav-link" href="#tab_2_<?= $sno ?>" data-toggle="tab">IP</a></li>
+                                                    <li class="nav-item"><a class="nav-link" href="#tab_3_<?= $sno ?>" data-toggle="tab">Location</a></li>
+                                                </ul>
+                                            </div><!-- /.card-header -->
+                                            <div class="card-body">
+                                                <div class="tab-content">
+                                                    <div class="tab-pane" id="tab_4_<?= $sno ?>">
+                                                        <h5><i class="icon fas fa-user-alt"></i> <?= ucfirst($manage_employee_log_info->action) ?> By -
+                                                            <?php
+                                                            if ($manage_employee_log_info->by == $auth->admin_id) :
+                                                                echo "You";
+                                                            else :
+                                                                $databaseObj->select("tbl_admin");
+                                                                $databaseObj->where("`status` = '" . $auth->visible() . "' && `admin_id` = '" . $manage_employee_log_info->by . "'");
+                                                                $getData = $databaseObj->get();
+                                                                //Checking If Data Is Available
+                                                                if ($getData != 0) :
+                                                                    foreach ($getData as $rows) :
+                                                                        $admin_info = json_decode($rows["admin_info"]);
+                                                                        echo $admin_info->name;
+                                                                    endforeach;
+                                                                else :
+                                                                    echo "Anonymous";
+                                                                endif;
+                                                            endif;
+                                                            ?>
+                                                        </h5>
+                                                    </div>
+                                                    <div class="tab-pane active" id="tab_1_<?= $sno ?>">
+                                                        <h5><i class="icon fas fa-calendar"></i> Date/Time - </h5>
+                                                        <?= date("l, M d, Y", strtotime($manage_employee_log_info->date)) ?> At <?= $manage_employee_log_info->at ?>
+                                                    </div>
+                                                    <div class="tab-pane" id="tab_2_<?= $sno ?>">
+                                                        <h5><i class="icon fas fa-server"></i> IP - </h5>
+                                                        <?= $manage_employee_log_info->ip ?>
+                                                    </div>
+                                                    <div class="tab-pane" id="tab_3_<?= $sno ?>">
+                                                        <h5><i class="icon fas fa-map-marker"></i> Location - </h5>
+                                                        <?php
+                                                        $latLangArray = explode(",", $manage_employee_log_info->location);
+                                                        $lat = explode(":", $latLangArray[0]);
+                                                        $lang = explode(":", $latLangArray[1]);
+                                                        ?>
+                                                        <iframe width="100%" height="300" src="https://maps.google.com/maps?q=<?= $lat[1] ?>,<?= $lang[1] ?>&output=embed"></iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php
+                                    $sno++;
+                                endforeach;
+                                ?>
+                            </div>
+                        <?php
+                        endforeach;
+                    else :
+                        ?>
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h5><i class="icon fas fa-ban"></i> Error Occurred!</h5>
+                            Something went wrong plase try again or refresh.
+                        </div>
+                    <?php
+                    endif;
+                else :
+                    ?>
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h5><i class="icon fas fa-ban"></i> Error Occurred!</h5>
+                        Something went wrong plase try again or refresh.
+                    </div>
+                <?php
+                endif;
+            else :
+                ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-ban"></i> Restriction!</h5>
+                    You have no permission to see the information of this Data.
+                </div>
+                <?php
+            endif;
+            break;
+            // ------------------------------------------------------
+            // ------------ Fetch Information Section End -----------
+            // ------------------------------------------------------
+            // ------------------------------------------------------
+            // ------------ Fetch See Section Start -----------------
+            // ------------------------------------------------------
+        case "fetchSee":
+            if ($authority == 1) :
+                if (isset($_POST["id"]) && !empty($_POST["id"])) :
+                    $databaseObj->select("tbl_manage_employee");
+                    $databaseObj->where("`status` = '" . $auth->visible() . "' && `manage_employee_id` = '" . $_POST["id"] . "'");
+                    $getData = $databaseObj->get();
+                    //Checking If Data Is Available
+                    if ($getData != 0) :
+                        foreach ($getData as $rows) :
+                            $manage_employee_info = json_decode($rows["manage_employee_info"]);
+                ?>
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Image</h5>
+
+
+                                        <?php
+                                        if ($manage_employee_info->img == "default") : ?>
+
+                                            <a href="<?= $defaultLogo ?>" target="_blank"><img src="<?= $defaultLogo ?>" alt="" class="table-see"></a>
+                                        <?php
+                                        else :
+                                        ?>
+                                            <a href="<?= $manageEmployeeDir . $manage_employee_info->img ?>" target="_blank"><img src="<?= $manageEmployeeDir . $manage_employee_info->img ?>" alt="" class="table-see"></a>
+                                        <?php
+                                        endif;
+                                        ?>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Employee Type</h5>
+                                        <?= $manage_employee_info->empType ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Project Name</h5>
+                                        <?= $manage_employee_info->project ?>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-md-3">
+                                                    <div class="callout callout-danger">
+                                                        <h5 class="text-bold">Property</h5>
+                                                        <?= $manage_employee_info->property ?>
+                                                    </div>
+                                                </div> -->
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">First Name</h5>
+                                        <?= $manage_employee_info->firstName ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Last Name</h5>
+                                        <?= $manage_employee_info->lastName ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Employee ID</h5>
+                                        <?= $manage_employee_info->employeeId ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Mobile</h5>
+                                        <?= $manage_employee_info->mobile ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Date Of Birth</h5>
+                                        <?= $manage_employee_info->dob ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Email</h5>
+                                        <?= $manage_employee_info->email ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Gender</h5>
+                                        <?= $manage_employee_info->gender ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Department</h5>
+                                        <?= $manage_employee_info->department ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Date of Joining</h5>
+                                        <?= $manage_employee_info->date_of_joining ?>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Source of Hire</h5>
+                                        <?= $manage_employee_info->source_of_hire ?>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Reporting To</h5>
+                                        <?= $manage_employee_info->reporting_to ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Employee Status</h5>
+                                        <?= $manage_employee_info->empStatus ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Work Phone</h5>
+                                        <?= $manage_employee_info->workPhone ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Employee Type</h5>
+                                        <?= $manage_employee_info->empType ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Address 1</h5>
+                                        <?= $manage_employee_info->address1 ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Address 2</h5>
+                                        <?= $manage_employee_info->address2 ?>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">City</h5>
+                                        <?= $manage_employee_info->city ?>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Country</h5>
+                                        <?= $manage_employee_info->country ?>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">State</h5>
+                                        <?= $manage_employee_info->state ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Nationality</h5>
+                                        <?= $manage_employee_info->nationality ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Postal Code</h5>
+                                        <?= $manage_employee_info->postalCode ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Marital Status</h5>
+                                        <?= $manage_employee_info->MaritalStatus ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Net Salary</h5>
+                                        <?= $manage_employee_info->netSalary ?>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Basic Salary</h5>
+                                        <?= $manage_employee_info->basicSalary ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">HRA</h5>
+                                        <?= $manage_employee_info->hra ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">TA</h5>
+                                        <?= $manage_employee_info->ta ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">CEA</h5>
+                                        <?= $manage_employee_info->cea ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">SA</h5>
+                                        <?= $manage_employee_info->sa ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Total Salary</h5>
+                                        <?= $manage_employee_info->totalSalary ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Employee Provident Fund</h5>
+                                        <?= $manage_employee_info->epf ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Loan</h5>
+                                        <?= $manage_employee_info->loan ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">total Deduction</h5>
+                                        <?= $manage_employee_info->totalDeduction ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Overtime Amount(per hour)</h5>
+                                        <?= $manage_employee_info->overtime ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Disincentive</h5>
+                                        <?= $manage_employee_info->disincentive ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Conveyance</h5>
+                                        <?= $manage_employee_info->conveyance ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Gross Salary</h5>
+                                        <?= $manage_employee_info->grossSalary ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Net Salary</h5>
+                                        <?= $manage_employee_info->finalSalary ?>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Bank Name</h5>
+                                        <?= $manage_employee_info->bankName ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Account No</h5>
+                                        <?= $manage_employee_info->acc_no ?>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="callout callout-danger">
+                                        <h5 class="text-bold">Branch</h5>
+                                        <?= $manage_employee_info->branch ?>
+                                    </div>
+                                </div>
+
+
+
+
+
+                            </div>
+                        <?php
+                        endforeach;
+                    else :
+                        ?>
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h5><i class="icon fas fa-ban"></i> Error Occurred!</h5>
+                            Something went wrong plase try again or refresh.
+                        </div>
+                    <?php
+                    endif;
+                else :
+                    ?>
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h5><i class="icon fas fa-ban"></i> Error Occurred!</h5>
+                        Something went wrong plase try again or refresh.
+                    </div>
+                <?php
+                endif;
+            else :
+                ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-ban"></i> Restriction!</h5>
+                    You have no permission to see the information of this Data.
+                </div>
+                <?php
+            endif;
+            break;
+            // ------------------------------------------------------
+            // ------------ Fetch See Section End -------------------
+            // ------------------------------------------------------
+            // ------------------------------------------------------
+            // ------------ Fetch Edit Section Start ----------------
+            // ------------------------------------------------------
+        case "fetchEdit":
+            if ($authority == 1) :
+                if (isset($_POST["id"]) && !empty($_POST["id"])) :
+                    $databaseObj->select("tbl_manage_employee");
+                    $databaseObj->where("`status` = '" . $auth->visible() . "' && `manage_employee_id` = '" . $_POST["id"] . "'");
+                    $getData = $databaseObj->get();
+                    //Checking If Data Is Available
+                    if ($getData != 0) :
+                        foreach ($getData as $rows) :
+                            $manage_employee_info = json_decode($rows["manage_employee_info"]);
+                ?>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editDepartment">Department</label>
+                                        <select class="form-control form-control-sm " data-dropdown-css-class="select2-navy" id="editDepartment" name="editDepartment">
+
+                                            <option disabled selected>Select</option>
+                                            <?php
+                                            $databaseObj->select("tbl_manage_department");
+                                            $databaseObj->where("`status` = '" . $auth->visible() . "'");
+                                            $getData = $databaseObj->get();
+                                            //Checking If Data Is Available
+                                            if ($getData != 0) :
+                                                $sno = 1;
+                                                foreach ($getData as $rows) :
+                                                    $manage_department_info = json_decode($rows["manage_department_info"]);
+                                            ?>
+                                                    <option <?php if ($manage_employee_info->department == $rows["manage_department_id"]) echo "selected" ?> value="<?= $rows["manage_department_id"] ?>"><?= $manage_department_info->departmentName ?></option>
+                                            <?php
+                                                endforeach;
+                                            endif;
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editDesignation">Designation</label>
+                                        <select id="editDesignation" name="editDesignation" class="form-control form-control-sm " data-dropdown-css-class="select2-navy" readonly>
+                                            <option disabled selected>Select</option>
+                                            <?php
+                                            $databaseObj->select("tbl_manage_designation");
+                                            $databaseObj->where("`status` = '" . $auth->visible() . "'");
+                                            $getData = $databaseObj->get();
+                                            //Checking If Data Is Available
+                                            if ($getData != 0) :
+                                                $sno = 1;
+                                                foreach ($getData as $rows) :
+                                                    $manage_designation_info = json_decode($rows["manage_designation_info"]);
+                                            ?>
+                                                    <option <?php if ($manage_employee_info->designation == $rows["manage_designation_id"]) echo "selected" ?> value="<?= $rows["manage_designation_id"] ?>"><?= $manage_designation_info->designationName ?></option>
+                                            <?php
+                                                endforeach;
+                                            endif;
+                                            ?>
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editjobType">Employee Type</label>
+                                        <select class="form-control form-control-sm " data-dropdown-css-class="select2-navy" name="editjobType" id="editEmpType">
+                                            <option value="">Select Employee Type</option>
+                                            <option value="Vendor Employee" <?php if ($manage_employee_info->jobType == "Vendor Employee") echo "selected" ?>>Vendor Employee</option>
+                                            <option value="On Payroll" <?php if ($manage_employee_info->jobType == "On Payroll") echo "selected" ?>>On Payroll</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+
+                                    <div class="form-group form-group-sm">
+                                        <label for="editProject">Project Name</label>
+                                        <select id="editProject" name="editProject" class="form-control form-control-sm " data-dropdown-css-class="select2-navy">
+                                            <option disabled selected>Select</option>
+                                            <?php
+                                            $databaseObj->select("tbl_projects");
+                                            $databaseObj->where("`status` = '" . $auth->visible() . "'");
+                                            $getData = $databaseObj->get();
+                                            //Checking If Data Is Available
+                                            if ($getData != 0) :
+                                                $sno = 1;
+                                                foreach ($getData as $rows) :
+                                                    $projects_info = json_decode($rows["projects_info"]);
+                                            ?>
+
+                                                    <!-- <option value="<?= $rows["projects_id"] ?>"><?= $projects_info->projectName ?></option> -->
+                                                    <option <?php if ($manage_employee_info->project == $rows["projects_id"]) echo "selected" ?> value="<?= $rows["projects_id"] ?>"><?= $projects_info->projectName ?></option>
+                                            <?php
+                                                endforeach;
+                                            endif;
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+
+                                <!-- <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="empType">Property</label>
+                                                             <select id="property" name="property" class="form-control select2 select2-navy" data-dropdown-css-class="select2-navy">
+                                        <input type="text" class="form-control" id="property" name="property" value="<?= $manage_employee_info->property ?>" autocomplete="off">
+
+
+                                                           </select>-->
+                                <!--  </div>
+                                </div> -->
+
+                                <div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Personal Details</h3>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editFirstName">First Name</label>
+                                        <input type="text" class="form-control form-control-sm " id="editFirstName" name="editFirstName" value="<?= $manage_employee_info->firstName ?>" autocomplete="off">
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editLastName">Last Name</label>
+                                        <input type="text" class="form-control form-control-sm " id="editLastName" name="editLastName" value="<?= $manage_employee_info->lastName ?>">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editEmployeeId">Employee ID</label>
+                                        <input type="text" class="form-control form-control-sm " id="editEmployeeId" name="editEmployeeId" value="<?= $manage_employee_info->employeeId ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editMobile">Mobile</label>
+                                        <input type="text" class="form-control form-control-sm " id="editMobile" name="editMobile" value="<?= $manage_employee_info->mobile ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editDob">Date Of Birth</label>
+                                        <input type="date" class="form-control form-control-sm " id="editDob" name="editDob" value="<?= $manage_employee_info->dob ?>">
+                                        <!--                                                <small class="text-red">Define this date after the completion of project</small>-->
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editEmail">Email</label>
+                                        <input type="text" class="form-control form-control-sm " id="editEmail" name="editEmail" value="<?= $manage_employee_info->email ?>">
+                                        <!--                                                <small class="text-red">Define this date after the completion of project</small>-->
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editGender">Gender</label>
+                                        <select class="form-control form-control-sm " data-dropdown-css-class="select2-navy" id="editGender" name="editGender">
+                                            <option value="">Select Gender</option>
+                                            <option value="Male" <?php if ($manage_employee_info->gender == "Male") echo "selected" ?>>Male</option>
+                                            <option value="Female" <?php if ($manage_employee_info->gender == "Female") echo "selected" ?>>Female</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editMaritalStatus">Marital Status</label>
+                                        <select class="form-control form-control-sm " data-dropdown-css-class="select2-navy" id="editMaritalStatus" name="editMaritalStatus">
+                                            <option value="">Select Status</option>
+                                            <option value="Single" <?php if ($manage_employee_info->MaritalStatus == "Single") echo "selected" ?>>Single</option>
+                                            <option value="Married" <?php if ($manage_employee_info->MaritalStatus == "Married") echo "selected" ?>>Married</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="editAnniversaryDiv" class="col-md-4 display-none">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editAnniversary">Date Of Anniversary</label>
+                                        <input id="editAnniversary" name="editAnniversary" type="date" class="form-control form-control-sm" value="<?= $manage_employee_info->Anniversary ?>" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Work Details</h3>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editDate_of_joining">Date of Joining</label>
+                                        <input type="date" class="form-control form-control-sm " id="editDate_of_joining" name="editDate_of_joining" value="<?= $manage_employee_info->date_of_joining ?>">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editSource_of_hire">Source of Hire</label>
+                                        <input type="text" class="form-control form-control-sm " id="editSource_of_hire" name="editSource_of_hire" value="<?= $manage_employee_info->source_of_hire ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editReporting_to">Reporting To</label>
+                                        <input type="text" class="form-control form-control-sm " id="editReporting_to" name="editReporting_to" value="<?= $manage_employee_info->reporting_to ?>">
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editEmpStatus">Employee Status</label>
+                                        <select class="form-control form-control-sm " data-dropdown-css-class="select2-navy" name="editEmpStatus" id="editEmpStatus">
+                                            <option value="">Select Status</option>
+                                            <option value="Active" <?php if ($manage_employee_info->empStatus == "Active") echo "selected" ?>>Active</option>
+                                            <option value="Inactive" <?php if ($manage_employee_info->empStatus == "Inactive") echo "selected" ?>>Inactive</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editWorkPhone">Work Phone</label>
+                                        <input type="text" class="form-control form-control-sm " id="editWorkPhone" name="editWorkPhone" value="<?= $manage_employee_info->workPhone ?>">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editType">Employee Type</label>
+                                        <select class="form-control form-control-sm " data-dropdown-css-class="select2-navy" name="editType">
+                                            <option value="">Select Employee Type</option>
+                                            <option value="Full Time" <?php if ($manage_employee_info->empType == "Full Time") echo "selected" ?>>Full Time</option>
+                                            <option value="Part Time" <?php if ($manage_employee_info->empType == "Part Time") echo "selected" ?>>Part Time</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Contact Details</h3>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editAddress1">Address 1</label>
+                                        <input type="text" class="form-control form-control-sm " id="editAddress1" name="editAddress1" value="<?= $manage_employee_info->address1 ?>">
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editAddress2">Address 2</label>
+                                        <input type="text" class="form-control form-control-sm " id="editAddress2" name="editAddress2" value="<?= $manage_employee_info->address2 ?>">
+                                        <!--                                                <small class="text-red">Define this date after the completion of project</small>-->
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editCity">City</label>
+                                        <input type="text" class="form-control form-control-sm " id="editCity" name="editCity" value="<?= $manage_employee_info->city ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editCountry">Country</label>
+                                        <input type="text" class="form-control form-control-sm " id="editCountry" name="editCountry" value="<?= $manage_employee_info->country ?>">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editState">State</label>
+                                        <input type="text" class="form-control form-control-sm " id="editState" name="editState" value="<?= $manage_employee_info->state ?>">
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editNationality">Nationality</label>
+                                        <input type="text" class="form-control form-control-sm " id="editNationality" name="editNationality" value="<?= $manage_employee_info->nationality ?>">
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editPostalCode">Postal Code</label>
+                                        <input type="text" class="form-control form-control-sm " id="editPostalCode" name="editPostalCode" value="<?= $manage_employee_info->postalCode ?>">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Salaries</h3>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Net Salary</label>
+                                        <input type="number" id="editnetSalary" class="form-control form-control-sm editSalary" name="editnetSalary" value="<?= intval($manage_employee_info->netSalary) ?>" onkeyup="editgetAmount()" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Basic Salary</label>
+                                        <input type="number" id="editbasicSalary" class="form-control form-control-sm editSalary" name="editbasicSalary" value="<?= intval($manage_employee_info->basicSalary) ?>" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>HRA</label>
+                                        <input type="number" id="editHra" class="form-control form-control-sm editSalary " name="editHra" value="<?= intval($manage_employee_info->hra) ?>" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>TA</label>
+                                        <input type="number" id="editTa" class="form-control form-control-sm editSalary" name="editTa" value="<?= intval($manage_employee_info->ta) ?>" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>CEA</label>
+                                        <input type="number" id="editCea" class="form-control form-control-sm editSalary" name="editCea" value="<?= intval($manage_employee_info->cea) ?>" readonly />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>SA</label>
+                                        <input type="number" id="editSa" class="form-control form-control-sm editSalary" name="editSa" value="<?= intval($manage_employee_info->sa) ?>" readonly />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Total Salary</label>
+                                        <input type="number" class="form-control form-control-sm" name="edittotalSalary" id="edittotalSalary" value="<?= intval($manage_employee_info->totalSalary) ?>" readonly />
+                                    </div>
+                                </div>
+
+                                <!--<div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Deductions</h3>
+                                    </div> 
+                                </div>-->
+                                <!-- <div class="col-md-3">     
+                                    <div class="form-group">
+                                        <label>EPF (Provident Fund)</label>
+                                        <input type="number" class="form-control form-control-sm editDeduction" id="editEpf" name="editEpf" value="12%" onkeyup="editgetDeduction()" readonly/>
+                                    </div>
+                                </div>-->
+                                <!--  <div class="col-md-3">     
+                                    <div class="form-group">
+                                        <label>ESI</label>
+                                        <input type="number" class="form-control form-control-sm editDeduction" id="editEsi" name="editEsi" value="<? //= intval($manage_employee_info->esi) 
+                                                                                                                                                    ?>" onkeyup="editgetDeduction()"/>
+                                    </div>
+                                </div> -->
+
+                                <!--<div class="col-md-3">     
+                                            <div class="form-group">
+                                                <label for="disincentive">Disincentive</label>
+                                                <input type="number" class="form-control form-control-sm" id="editDisincentive" name="editDisincentive" value="" value="<?= intval($manage_employee_info->disincentive) ?>" />
+                                            </div>
+                                        </div>
+                              
+                              
+                                <div class="col-md-3">     
+                                    <div class="form-group">
+                                        <label>Loan</label>
+                                        <input type="number" class="form-control form-control-sm editDeduction" id="editLoan" name="editLoan" value="<?= intval($manage_employee_info->loan) ?>"/>
+                                    </div>
+                                </div>
+                              
+                              
+                                 <div class="col-md-3">     
+                                    <div class="form-group">
+                                        <label>Loan EMI</label>
+                                        <input type="number" class="form-control form-control-sm editDeduction" id="editLoanemi" name="editLoanemi" value="<?= intval($manage_employee_info->loanemi) ?>"/>
+                                    </div>
+                                </div>-->
+
+
+                                <div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Leave</h3>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="leave">Total Leave</label>
+                                        <input type="text" class="form-control form-control-sm" id="edittotalLeave" name="edittotalLeave" value="<?= intval($manage_employee_info->totalLeave) ?>" />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="leave">Leave Left</label>
+                                        <input type="text" class="form-control form-control-sm" id="editleaveLeft" name="editleaveLeft" value="<?= intval($manage_employee_info->leaveLeft) ?>" />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Extra Income</h3>
+                                    </div>
+                                </div>
+
+
+
+
+                                <!--<div class="col-md-3">     
+                                        
+                                            <div class="form-group">
+                                                <label for="incentive">Incentive</label>
+                                                <input type="number" class="form-control form-control-sm" id="editIncentive" name="editIncentive" onkeyup="income()" />
+                                            </div>
+                                        </div> -->
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="conveyance">Conveyance</label>
+                                        <input type="number" class="form-control form-control-sm" id="editConveyance" name="editConveyance" value="<?= intval($manage_employee_info->conveyance) ?>" onkeyup="income()" />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Totals</h3>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Gross Salary</label>
+                                        <input type="number" class="form-control form-control-sm" name="editgrossSalary" id="editgrossSalary" value="<?= intval($manage_employee_info->grossSalary) ?>" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Net Salary</label>
+                                        <input type="number" class="form-control form-control-sm" name="editfinalSalary" id="editfinalSalary" value="<?= intval($manage_employee_info->finalSalary) ?>" readonly />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Bank Account Details</h3>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editAccount_holder_name">Account Holder Name</label>
+                                        <input type="text" class="form-control form-control-sm " id="editAccount_holder_name" name="editAccount_holder_name" value="<?= $manage_employee_info->account_holder_name ?>">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editBankName">Bank Name</label>
+                                        <input type="text" class="form-control form-control-sm " id="editBankName" name="editBankName" value="<?= $manage_employee_info->bankName ?>">
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editAcc_no">Account No</label>
+                                        <input type="text" class="form-control form-control-sm " id="editAcc_no" name="editAcc_no" value="<?= $manage_employee_info->acc_no ?>">
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editBranch">Branch</label>
+                                        <input type="text" class="form-control form-control-sm" id="editBranch" name="editBranch" value="<?= $manage_employee_info->branch ?>">
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12">
+                                    <div class="card-header" style="color:white; background-color: #001f3f; padding:8px;">
+                                        <h3 class="card-title">Image</h3>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editImg">Image Upload</label>
+
+
+                                        <?php
+                                        if ($manage_employee_info->img == "default") :
+                                        ?>
+                                            <a href="<?= $defaultLogo ?>" target="_blank"><img src="<?= $defaultLogo ?>" alt="" class="table-avatar"></a>
+                                        <?php
+                                        else :
+                                        ?>
+                                            <a href="<?= $employeeDir . $manage_employee_info->img ?>" target="_blank"><img src="<?= $employeeDir . $manage_employee_info->img ?>" alt="" class="table-avatar"></a>
+                                        <?php
+                                        endif;
+                                        ?>
+                                        <input type="file" class="form-control form-control-sm" id="editImg" name="editImg" accept="image/*">
+                                    </div>
+                                </div>
+                                <!--  <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editAadharimage">AAdhar Card Image  Upload</label>
+
+
+                                        <?php
+                                        if ($manage_employee_info->aadharimage == "default") :
+                                        ?>
+                                        <a href="<?= $defaultLogo ?>" target="_blank"><img src="<?= $defaultLogo ?>" alt="" class="table-avatar"></a>
+                                        <?php
+                                        else :
+                                        ?>
+                                        <a href="<?= $employeeDir . $manage_employee_info->aadharimage ?>" target="_blank"><img src="<?= $employeeDir . $manage_employee_info->aadharimage ?>" alt="" class="table-avatar"></a>
+                                        <?php
+                                        endif;
+                                        ?>
+                                        <input type="file" class="form-control" id="editAadharimage" name="editAadharimage" accept="image/*">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <div class="form-group form-group-sm">
+                                        <label for="editPanimage">Pan Card  Upload</label>
+
+
+                                        <?php
+                                        if ($manage_employee_info->panimage == "default") :
+                                        ?>
+                                        <a href="<?= $defaultLogo ?>" target="_blank"><img src="<?= $defaultLogo ?>" alt="" class="table-avatar"></a>
+                                        <?php
+                                        else :
+                                        ?>
+                                        <a href="<?= $employeeDir . $manage_employee_info->panimage ?>" target="_blank"><img src="<?= $employeeDir . $manage_employee_info->panimage ?>" alt="" class="table-avatar"></a>
+                                        <?php
+                                        endif;
+                                        ?>
+                                        <input type="file" class="form-control" id="editPanimage" name="editPanimage" accept="image/*">
+                                    </div>
+                               
+                                    <input type="hidden" name="editTableId" value="<?= $_POST["id"] ?>" />
+                                </div>
+                                <div class="col-md-3">
+                                        <div class="form-group form-group-sm">
+                                            <label for="editAddressProofimage">Address Proof Upload</label>
+
+
+                                            <?php
+                                            if ($manage_employee_info->addressProofimage == "default") :
+                                            ?>
+                                            <a href="<?= $defaultLogo ?>" target="_blank"><img src="<?= $defaultLogo ?>" alt="" class="table-avatar"></a>
+                                            <?php
+                                            else :
+                                            ?>
+                                            <a href="<?= $employeeDir . $manage_employee_info->addressProofimage ?>" target="_blank"><img src="<?= $employeeDir . $manage_employee_info->addressProofimage ?>" alt="" class="table-avatar"></a>
+                                            <?php
+                                            endif;
+                                            ?>
+                                            <input type="file" class="form-control" id="editAddressProofimage" name="editAddressProofimage" accept="image/*">
+                                        </div>
+                                     -->
+                                <input type="hidden" name="editTableId" value="<?= $_POST["id"] ?>" />
+                            </div>
+                        <?php
+                        endforeach;
+                    else :
+                        ?>
+
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h5><i class="icon fas fa-ban"></i> Error Occurred!</h5>
+                            Something went wrong plase try again or refresh.
+                        </div>
+                    <?php
+                    endif;
+                else :
+                    ?>
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h5><i class="icon fas fa-ban"></i> Error Occurred!</h5>
+                        Something went wrong plase try again or refresh.
+                    </div>
+                <?php
+                endif;
+            else :
+                ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-ban"></i> Restriction!</h5>
+                    You have no permission to see the information of this Data.
+                </div>
+                <?php
+            endif;
+            break;
+            // ------------------------------------------------------
+            // ------------ Fetch Edit Section End ------------------
+            // ------------------------------------------------------
+            // ------------------------------------------------------
+            // ------------ Fetch Information Section Start ---------
+            // ------------------------------------------------------
+        case "fetchDelete":
+            if ($authority == 1) :
+                if (isset($_POST["id"]) && !empty($_POST["id"])) :
+                ?>
+                    <div class="alert alert-danger alert-dismissible">
+                        <h5><i class="icon fas fa-ban"></i> Alert!</h5>
+                        Do you really wanna delete this data???
+                    </div>
+                    <input type="hidden" id="tableId" name="tableId" value="<?= $_POST["id"] ?>" />
+                    <input type="hidden" id="tableName" name="tableName" value="tbl_manage_employee" />
+                <?php
+                else :
+                ?>
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h5><i class="icon fas fa-ban"></i> Error Occurred!</h5>
+                        Something went wrong plase try again or refresh.
+                    </div>
+                <?php
+                endif;
+            else :
+                ?>
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h5><i class="icon fas fa-ban"></i> Restriction!</h5>
+                    You have no permission to see the information of this Data.
+                </div>
+                <?php
+            endif;
+            break;
+            // ------------------------------------------------------
+            // ------------ Fetch Information Section End -----------
+            // ------------------------------------------------------
+        case "fetchProjectDetails":
+            if ($authority == 1) :
+                if (isset($_POST["project"]) && !empty($_POST["project"])) :
+                    $databaseObj->select("tbl_projects");
+                    $databaseObj->where("`status` = '" . $auth->visible() . "' && `projects_id` = '" . $_POST["project"] . "'");
+                    $getData = $databaseObj->get();
+                    //Checking If Data Is Available
+                    if ($getData != 0) :
+                        foreach ($getData as $rows) :
+                            $project_info = json_decode($rows["projects_info"]);
+                            foreach ($project_info->properties as $properties) :
+                                $databaseObj->select("tbl_property_type");
+                                $databaseObj->where("`status` = '" . $auth->visible() . "' && `property_type_id` = '" . $properties->propertyType . "'");
+                                $getData = $databaseObj->get();
+                                //Checking If Data Is Available
+                                if ($getData != 0) :
+                                    foreach ($getData as $rows) :
+                                        $property_type_info = json_decode($rows["property_type_info"]);
+                                    endforeach;
+                                endif;
+                                $databaseObj->select("tbl_accommodation_type");
+                                $databaseObj->where("`status` = '" . $auth->visible() . "' && `accommodation_type_id` = '" . $properties->accommodationType . "'");
+                                $getData = $databaseObj->get();
+                                //Checking If Data Is Available
+                                if ($getData != 0) :
+                                    foreach ($getData as $rows) :
+                                        $accommodation_type_info = json_decode($rows["accommodation_type_info"]);
+                                    endforeach;
+                                endif;
+                ?>
+                                <option value="<?= $property_type_info->propertyType ?>,<?= $accommodation_type_info->accommodationType ?>,<?= $properties->squareFeet  ?>"><?= $property_type_info->propertyType ?>, <?= $accommodation_type_info->accommodationType  ?>, Sq. Feet - <?= $properties->squareFeet  ?></option>
+                            <?php
+                            endforeach;
+                        endforeach;
+                    endif;
+                    exit;
+
+                endif;
+            endif;
+            break;
+            // ------------------------------------------------------
+            // ------------ Fetch Information Section End -----------
+            // ------------------------------------------------------
+
+        case "fetchDesignationDetails":
+            if ($authority == 1) :
+                if (isset($_POST["department"]) && !empty($_POST["department"])) :
+                    $databaseObj->select("tbl_manage_designation");
+                    $databaseObj->where("`status` = '" . $auth->visible() . "'");
+                    $getData = $databaseObj->get();
+                    //Checking If Data Is Available
+                    if (count($getData) != 0) :
+                        foreach ($getData as $rows) :
+                            $manage_designation_info = json_decode($rows["manage_designation_info"]);
+                            if ($manage_designation_info->departmentName == $_POST["department"]) :
+                                echo "yes";
+                                $databaseObj->select("tbl_manage_department");
+                                $databaseObj->where("`status` = '" . $auth->visible() . "' && `manage_department_id` = '" . $manage_designation_info->departmentName . "'");
+                                $getDataDesignation = $databaseObj->get();
+                                //Checking If Data Is Available
+                                if (count($getDataDesignation) != 0) :
+                                    foreach ($getDataDesignation as $rowsDesignation) :
+                                        $manage_department_info = json_decode($rowsDesignation["manage_department_info"]);
+                                    endforeach;
+                                endif;
+
+                            ?>
+                                <option value="<?= $rows["manage_designation_id"] ?>"><?= $manage_designation_info->designationName  ?></option>
+                            <?php
+                            endif;
+                        endforeach;
+                    endif;
+                    exit;
+                endif;
+            endif;
+            break;
+
+            break;
+        case "editfetchDesignationDetails":
+            if ($authority == 1) :
+                if (isset($_POST["editDepartment"]) && !empty($_POST["editDepartment"])) :
+                    $databaseObj->select("tbl_manage_designation");
+                    $databaseObj->where("`status` = '" . $auth->visible() . "'");
+                    $getData = $databaseObj->get();
+                    //Checking If Data Is Available
+                    if (count($getData) != 0) :
+                        foreach ($getData as $rows) :
+                            $manage_designation_info = json_decode($rows["manage_designation_info"]);
+                            if ($manage_designation_info->departmentName == $_POST["editDepartment"]) :
+                                // echo "yes";
+                                $databaseObj->select("tbl_manage_department");
+                                $databaseObj->where("`status` = '" . $auth->visible() . "' && `manage_department_id` = '" . $manage_designation_info->departmentName . "'");
+                                $getDataDesignation = $databaseObj->get();
+                                //Checking If Data Is Available
+                                if (count($getDataDesignation) != 0) :
+                                    foreach ($getDataDesignation as $rowsDesignation) :
+                                        $manage_department_info = json_decode($rowsDesignation["manage_department_info"]);
+                                    endforeach;
+                                endif;
+
+                            ?>
+                                <option value="<?= $rows["manage_designation_id"] ?>"><?= $manage_designation_info->designationName ?></option>
+
+            <?php
+                            endif;
+                        endforeach;
+                    endif;
+                    exit;
+                endif;
+            endif;
+
+            break;
+        default:
+            ?>
+
+            <script>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: false,
+                    onOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+                function topEndNotification(theme, message) {
+                    Toast.fire({
+                        icon: theme,
+                        title: message
+                    })
+                }
+                topEndNotification("warning", "Something went wrong, please try again or refresh...");
+            </script>
+<?php
+            break;
+    endswitch;
+endif;
+?>
+<script>
+    function income() {
+        $('#Extraincome').val(Number($("#overtime").val()) + Number($("#incentive").val()) - Number($("#disincentive").val()) + Number($("#conveyance").val()));
+    }
+
+  
+</script>

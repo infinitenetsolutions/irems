@@ -184,7 +184,7 @@
         }
         //Where Function
         public function where($passedCondition){
-            $this->sql .= " WHERE $passedCondition";
+              $this->sql .= " WHERE $passedCondition";
         }
         //Limit Function
         public function limit($passedCondition){

@@ -95,7 +95,8 @@ function delete($table_name, $condition = 1)
 function fetchRow($table_name, $condition = 1)
 {
     global $conn;
-    $query = "SELECT * FROM `$table_name` WHERE $condition ";
+    echo "<pre>";
+  echo   $query = "SELECT * FROM `$table_name` WHERE $condition ";
     $result = mysqli_query($conn, $query);
     return mysqli_fetch_array($result);
 }

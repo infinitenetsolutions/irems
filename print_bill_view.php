@@ -189,12 +189,13 @@ require_once("application/classes-and-objects/veriables.php");
                                     <td style="color:#6b0100;"><b>Bill Due Date:</b><b style="color:black;"> <?php echo date("d-m-Y", strtotime($result['bill_due_date']))  ?></b></td>
                                     <?php
 
-                                    $resultt = mysqli_query($conn, "SELECT SUM(total) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
+                                    $resultt = mysqli_query($conn, "SELECT SUM(amount) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
                                     $row = mysqli_fetch_assoc($resultt);
                                     $sum3 = round($row['totalsum'], 2);
                                     $pay = round($sum3 * 0.02) + $sum3;  //calculate 2%  of total
                                     ?>
-                                    <td style="color:#6b0100;"><b>Payment After Due Date:</b><b style="color:black;"> <?php echo $pay ?></b></td>
+                                    <td style="color:#6b0100;"><b>Payment After Due Date:</b><b style="color:black;"> <?php echo $pay
+                                                                                                                        ?></b></td>
 
                                 </tr>
 
@@ -314,14 +315,16 @@ require_once("application/classes-and-objects/veriables.php");
                                         <th style="width: 25%;" rowspan="2" colspan="3">
                                             <center>Description Of Goods & Services</center>
                                         </th>
-                                        <th rowspan="2">
-                                            <center>UOM</center>
-                                        </th>
+
                                         <th rowspan="2">
                                             <center>Quantity</center>
                                         </th>
                                         <th rowspan="2">
                                             <center>Rate</center>
+                                        </th>
+
+                                        <th rowspan="2">
+                                            <center>Per</center>
                                         </th>
                                         <th rowspan="2">
                                             <center>Amount</center>
@@ -335,11 +338,11 @@ require_once("application/classes-and-objects/veriables.php");
                                         <th colspan="2">
                                             <center>SGST<center>
                                         </th>
-                                        <th colspan="2">
+                                        <!-- <th colspan="2">
                                             <center>IGST</center>
-                                        </th>
+                                        </th> -->
                                         <th style="width: 13%;" rowspan="2">
-                                            <center>Total</center>
+                                            <center>Total Tax Amount</center>
                                         </th>
                                     </tr>
                                     <div id="watermark">
@@ -363,12 +366,12 @@ require_once("application/classes-and-objects/veriables.php");
                                         <th>
                                             <center>Amount</center>
                                         </th>
-                                        <th>
+                                        <!-- <th>
                                             <center>Rate</center>
                                         </th>
                                         <th>
                                             <center>Amount</center>
-                                        </th>
+                                        </th> -->
                                     </tr>
 
                                     <?php
@@ -382,19 +385,18 @@ require_once("application/classes-and-objects/veriables.php");
                                     ?>
                                         <tr align="center" style="border-bottom: white; page-break-inside:avoid; page-break-after:auto">
                                             <td style="font-family:arial !important;"><?php echo $cnt++ ?></td>
-                                            <td align="left" colspan="3" style="font-family:arial !important;"><?php echo $result['service'] ?></td>
-                                            <td style="font-family:arial !important;"><?php echo $result['unit'] ?></td>
-                                            <td style="font-family:arial !important;"><?php echo $result['quantity'] ?></td>
+                                            <td align="left" colspan="3" style="font-family:arial !important;"><?php echo $result['desc_of_goods'] ?></td>
+                                            <td style="font-family:arial !important;"><?php echo $result['qty'] ?></td>
                                             <td style="font-family:arial !important;"><?php echo $result['rate'] ?></td>
-                                            <td style="font-family:arial !important;"><?php echo round($result['amount'], 2)  ?></td>
-                                            <td style="font-family:arial !important;"><?php echo round($result['amount'], 2)  ?></td>
-                                            <td style="font-family:arial !important;"><?php echo $result['cgstrate'] ?>%</td>
-                                            <td style="font-family:arial !important;"><?php echo round($result['cgstamt'], 2) ?></td>
-                                            <td style="font-family:arial !important;"><?php echo $result['sgstrate'] ?>%</td>
-                                            <td style="font-family:arial !important;"><?php echo round($result['sgstamt'], 2) ?></td>
-                                            <td style="font-family:arial !important;"><?php echo $result['igstrate'] ?>%</td>
-                                            <td style="font-family:arial !important;"><?php echo round($result['igstamt'], 2) ?></td>
-                                            <td style="font-family:arial !important;"><?php echo round($result['total'], 2)  ?></td>
+                                            <td style="font-family:arial !important;"><?php echo $result['per'] ?></td>
+                                            <td style="font-family:arial !important;"><?php echo $result['amount']  ?></td>
+                                            <td style="font-family:arial !important;"><?php echo $result['taxable_value']  ?></td>
+                                            <td style="font-family:arial !important;"><?php echo $result['cgst_rate'] ?>%</td>
+                                            <td style="font-family:arial !important;"><?php echo $result['cgst_amnt'] ?></td>
+                                            <td style="font-family:arial !important;"><?php echo $result['sgst_rate'] ?>%</td>
+                                            <td style="font-family:arial !important;"><?php echo $result['sgst_amount'] ?></td>
+
+                                            <td style="font-family:arial !important;"><?php echo round($result['total_tax_amount'], 2)  ?></td>
                                         </tr>
 
 
@@ -415,45 +417,54 @@ require_once("application/classes-and-objects/veriables.php");
                                         $sum =  round($row['totalsum'], 2);
 
                                         ?>
-                                        <td><?php echo $sum ?></td>
-                                        <td colspan="1"></td>
-                                        <td colspan="1"><b>Total</b></td>
+                                        <td><b><?php echo $sum ?></b></td>
+                                        <?php
+
+                                        $result = mysqli_query($conn, "SELECT SUM(taxable_value) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
+                                        $row = mysqli_fetch_assoc($result);
+                                        $sum =  round($row['totalsum'], 2);
+
+                                        ?>
+
+                                        <td colspan="1"><b><?php echo $sum ?></b></td>
+                                        <td colspan="1"><b></b></td>
 
                                         <?php
 
-                                        $result = mysqli_query($conn, "SELECT SUM(cgstamt) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
+                                        $result = mysqli_query($conn, "SELECT SUM(cgst_amnt) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
                                         $row = mysqli_fetch_assoc($result);
                                         $sum_cgstamt = round($row['totalsum'], 2);
                                         ?>
 
-                                        <td colspan="1"><?php echo $sum_cgstamt ?></td>
-                                        <td colspan="1"><b>Total</b></td>
+                                        <td colspan="1"><b><?php echo $sum_cgstamt ?></b></td>
+                                        <td colspan="1"><b></b></td>
 
                                         <?php
 
-                                        $result = mysqli_query($conn, "SELECT SUM(igstamt) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
-                                        $row = mysqli_fetch_assoc($result);
-                                        $sum1 = round($row['totalsum'], 2);
+                                        // $result = mysqli_query($conn, "SELECT SUM(igstamt) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
+                                        // $row = mysqli_fetch_assoc($result);
+                                        // $sum1 = round($row['totalsum'], 2);
                                         ?>
 
                                         <?php
 
-                                        $result = mysqli_query($conn, "SELECT SUM(sgstamt) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
+                                        $result = mysqli_query($conn, "SELECT SUM(sgst_amount) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
                                         $row = mysqli_fetch_assoc($result);
                                         $sum_sgstamt = round($row['totalsum'], 2);
                                         ?>
-                                        <td colspan="1"><?php echo $sum_sgstamt ?></td>
-                                        <td colspan="1"><b>Total</b></td>
-
-                                        <td colspan="1"><?php echo $sum1 ?></td>
-
+                                        <td colspan="1"><b><?php echo $sum_sgstamt ?></b></td>
                                         <?php
 
-                                        $result = mysqli_query($conn, "SELECT SUM(total) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
+                                        $result = mysqli_query($conn, "SELECT SUM(total_tax_amount) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
                                         $row = mysqli_fetch_assoc($result);
                                         $sum3 = round($row['totalsum'], 2);
                                         ?>
-                                        <td><?php echo $sum3 ?></td>
+                                        <td colspan="1"><b><?php echo $sum3 ?></b></td>
+
+
+
+
+                                        <td></td>
                                     </tr>
 
                                 </table>

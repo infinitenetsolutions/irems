@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title><?php if($setting->setting_firm_info->firm_nick_name != "") echo $setting->setting_firm_info->firm_nick_name; else echo $setting->setting_firm_info->firm_name; ?> | Employee Management</title>
+    <title><?php if($setting->setting_firm_info->firm_nick_name != "") echo $setting->setting_firm_info->firm_nick_name; else echo $setting->setting_firm_info->firm_name; ?> | Manage Maintainance</title>
     <!-- Css Section Start -->
     <?php require_once("include/css.php"); ?>
     <!-- Css Section End -->
@@ -57,19 +57,17 @@
                 <div class="card card-navy card-outline">
                     <div class="card-header">
                         <h3 class="card-title float-right">
-                            <button id="refresh-button" type="button" class="refresh-button btn btn-sm btn-danger mt-1 mb-1" title="Refresh" disabled>
-                                <i class="fas fa-sync-alt fa-sm"></i>
-                            </button>
+                           
+
+                            <form action="./imprtExcel/importData.php" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="doc" />
+                            <button name="submit" id="addButton" type="submit" class="import-button btn btn-sm btn-info mt-1 mb-1" title=""> <i class="fa fa-upload fa-sm"></i>Import</button>
+                        </form>
                         
-                            <button id="import-button" type="button" class="import-button btn btn-sm btn-info mt-1 mb-1" data-toggle="modal" data-target="#import-modal" title="Import" disabled>
+                            <!-- <button id="import-button" type="button" class="import-button btn btn-sm btn-info mt-1 mb-1" data-toggle="modal" data-target="#import-modal" title="Import" disabled>
                                 <i class="fa fa-upload fa-sm"></i> Import
-                            </button>
-                            <button id="export-button" type="button" class="export-button btn btn-sm btn-warning display-none mt-1 mb-1" data-toggle="modal" data-target="#export-modal" title="Export" disabled>
-                                <i class="fa fa-download fa-sm"></i> Export
-                            </button>
-                            <button id="delete-button" type="button" class="delete-button btn btn-sm btn-danger display-none mt-1 mb-1" data-toggle="modal" data-target="#delete-selected-modal" title="Delete" disabled>
-                                <i class="fa fa-trash fa-sm"></i> Delete
-                            </button>
+                            </button> -->
+                          
                         </h3>
                     </div>
                     <div class="card-body table-responsive" id="view-section"></div>
