@@ -11,7 +11,7 @@ $auth = new AUTHENTICATION($databaseObj);
 //session_start();
 // "<pre>";
 // print_r($_POST); exit;
-
+// 
 if (isset($_POST['submit'])) {
 
   $extention = $_FILES['doc']['name'];
