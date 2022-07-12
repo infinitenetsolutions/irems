@@ -80,13 +80,15 @@ if (isset($_POST["action"])) :
                                     if ($getData != 0) :
                                         foreach ($getData as $rows_cus) :
                                             $manage_customer_info = json_decode($rows_cus["customer_info"]);
+                                            $manage_customer_property_info = json_decode($rows_cus["customer_property_info"]);
+                                            
                                         endforeach;
                                     endif;
                                     ?>
 
 
 
-                                    <td><?= $manage_customer_info->name ?></td>
+                                    <td><?= $manage_customer_info->name ?> | <?= $manage_customer_property_info->flat_no ?></td>
                                     <td><?= $rows['bill_due_date'] ?></td>
 
                                     <td class="text-center">
