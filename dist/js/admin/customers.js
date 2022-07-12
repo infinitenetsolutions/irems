@@ -1231,6 +1231,7 @@ $(function(){
         calculateAmount();
         fullPercentage = (100).toFixed(2);
         var totalPriceOfProperty=Number($("#propertyPriceDeal").val())+Number($("#CarParkingAmount").val())+Number($("#ScooterParkingAmount").val());
+        console.log(totalPriceOfProperty);
         var bookingDate=$('#paymentAmountDate').val();
         if($('#propertyPriceDeal').val() == ""){
             topEndNotification("warning", "Please mention Dealing price first!!!");
@@ -1250,9 +1251,12 @@ $(function(){
                     $("#paymentStuctureAmount1").attr("readonly", "readonly");
                     $("#paymentAmountInRupees").val(convertNumberToWords($("#paymentAmount").val()));
                 } else{
-                    var priceOfProperty = totalPriceOfProperty;
-                    var percentageOfOne = priceOfProperty/100;
-                    var downPaymentPercentage = $("#paymentAmount").val()/percentageOfOne;
+                    var priceOfProperty = totalPriceOfProperty; //200000.00
+                    //console.log(priceOfProperty);
+                    var percentageOfOne = priceOfProperty/100;  //2000
+                   // console.log(percentageOfOne);
+                    var downPaymentPercentage = $("#paymentAmount").val()/percentageOfOne;  //50
+                    //console.log(downPaymentPercentage);
                     fullPercentage = (fullPercentage) - (downPaymentPercentage.toFixed(2));
                     $("#paymentStuctureRemark1").val("Booking Amount");
                     $("#paymentStuctureCompletion1").val(downPaymentPercentage.toFixed(2));
@@ -1284,7 +1288,7 @@ $(function(){
         fullPercentage = (100).toFixed(2);
         var totalPriceOfProperty=Number($("#propertyPriceDeal").val())+Number($("#CarParkingAmount").val())+Number($("#ScooterParkingAmount").val());
         var bookingDate=$('#paymentAmountDate').val();
-        console.log(bookingDate);
+        //console.log(bookingDate);
         if($('#propertyPriceDeal').val() == ""){
             topEndNotification("warning", "Please mention Dealing price first!!!");
             $("#paymentAmount").val(0);
@@ -1335,7 +1339,7 @@ $(function(){
     // Number In Words Section Start --------------------------------------------------------------------------------------------------------------- 
     $("#paymentAmountDate").on("click keyup change", function () {
            var bookingDate=$('#paymentAmountDate').val();
-            console.log(bookingDate);
+           // console.log(bookingDate);
             $("#paymentStuctureDate1").attr("readonly", "readonly");
             $("#paymentStuctureDate1").val(bookingDate);
     });

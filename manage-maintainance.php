@@ -56,13 +56,14 @@
             <section class="content">
                 <div class="card card-navy card-outline">
                     <div class="card-header">
-                        <h3 class="card-title float-right">
-                           
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="dist/img/BILL_FORMAT.csv"><b style="font-size:16px; color:red;">Format</b></a>
 
+                        <h3 class="card-title float-right">
+                          
                             <form action="./imprtExcel/importData.php" method="POST" enctype="multipart/form-data">
                             <input type="file" name="doc" />
                             <button name="submit" id="addButton" type="submit" class="import-button btn btn-sm btn-info mt-1 mb-1" title=""> <i class="fa fa-upload fa-sm"></i>Import</button>
-                        </form>
+                            </form>
                         
                             <!-- <button id="import-button" type="button" class="import-button btn btn-sm btn-info mt-1 mb-1" data-toggle="modal" data-target="#import-modal" title="Import" disabled>
                                 <i class="fa fa-upload fa-sm"></i> Import

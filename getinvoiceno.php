@@ -1,7 +1,7 @@
 <?php
 
 
-$servicename = $_POST['servicename'];
+ $servicename = $_POST['servicename'];
 
 
 
@@ -13,6 +13,9 @@ $result = $con->query($sql);
 if ($result->num_rows > 0) {
   while ($row = $result->fetch_assoc()) {
     $last_invoice_no = $row["invoice_no"];
+
+    // echo "<pre>";
+    // print_r($last_invoice_no); exit;
 
     $last_no_check = $last_invoice_no[3];
     if ($last_no_check > $last_no) {

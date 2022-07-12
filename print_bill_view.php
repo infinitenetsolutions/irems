@@ -189,7 +189,7 @@ require_once("application/classes-and-objects/veriables.php");
                                     <td style="color:#6b0100;"><b>Bill Due Date:</b><b style="color:black;"> <?php echo date("d-m-Y", strtotime($result['bill_due_date']))  ?></b></td>
                                     <?php
 
-                                    $resultt = mysqli_query($conn, "SELECT SUM(amount) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
+                                    $resultt = mysqli_query($conn, "SELECT SUM(total_tax_amount) AS totalsum FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
                                     $row = mysqli_fetch_assoc($resultt);
                                     $sum3 = round($row['totalsum'], 2);
                                     $pay = round($sum3 * 0.02) + $sum3;  //calculate 2%  of total
@@ -553,26 +553,25 @@ require_once("application/classes-and-objects/veriables.php");
                                             <td>
                                                 <?php if ($res['project_id'] == '13') {  ?>
 
-                                                    <center><b>for Srinath Services</b></center>
+                                                    <center><b>Srinath Maintenance Services</b></center>
                                                 <?php } ?>
 
                                                 <?php if ($res['project_id'] == '12') {  ?>
 
-                                                    <center><b>for Srinath Services</b></center>
+                                                    <center><b>Srinath Maintenance Services</b></center>
                                                 <?php } ?>
 
                                                 <?php if ($res['project_id'] == '8') {  ?>
 
-                                                    <center><b>for Srinath Rock Garden</b></center>
+                                                    <center><b>Rock Garden Maintenance Services</b></center>
                                                 <?php } ?>
 
                                                 <?php if ($res['project_id'] == '10') {  ?>
 
-                                                    <center><b>for Srinath Global</b></center>
+                                                    <center><b>Srinath Global Maintenance Services</b></center>
                                                 <?php } ?>
                                                 <center><b></b></center> <br><br><br>
                                                 <center><b> Authorized Signatory </b></center>
-                                                <!-- <center><b>Srinath Homes pvt ltd</b></center> -->
                                             </td>
                                         <?php } ?>
                                     </tr>

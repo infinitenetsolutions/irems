@@ -8,10 +8,9 @@ require_once("../application/classes-and-objects/authentication.php");
 
 
 $auth = new AUTHENTICATION($databaseObj);
-//session_start();
-// "<pre>";
-// print_r($_POST); exit;
-// 
+
+ 
+ 
 if (isset($_POST['submit'])) {
 
   $extention = $_FILES['doc']['name'];
@@ -28,7 +27,7 @@ if (isset($_POST['submit'])) {
       for ($i = 2; $i <= $number_of_row; $i++) {
         // here 0 and 1 is the number of index or colunmn in excel file 
         // $i is th number of data in rows 
-        $sno = $all_data->getCellByColumnAndRow(0, $i)->getValue();
+       echo $sno = $all_data->getCellByColumnAndRow(0, $i)->getValue();
         $invoice_no = $all_data->getCellByColumnAndRow(1, $i)->getValue();
         $invoice_date = $all_data->getCellByColumnAndRow(2, $i)->getValue();
         $bill_due_date = $all_data->getCellByColumnAndRow(3, $i)->getValue();
@@ -66,7 +65,6 @@ if (isset($_POST['submit'])) {
 
 
     if ($result) {
-      echo "working";
       $_SESSION['massage'] = '<div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>Success!</strong> Data Imported Successfully.
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
