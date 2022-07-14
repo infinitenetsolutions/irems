@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
       for ($i = 2; $i <= $number_of_row; $i++) {
         // here 0 and 1 is the number of index or colunmn in excel file 
         // $i is th number of data in rows 
-       echo $sno = $all_data->getCellByColumnAndRow(0, $i)->getValue();
+        $sno = $all_data->getCellByColumnAndRow(0, $i)->getValue();
         $invoice_no = $all_data->getCellByColumnAndRow(1, $i)->getValue();
         $invoice_date = $all_data->getCellByColumnAndRow(2, $i)->getValue();
         $bill_due_date = $all_data->getCellByColumnAndRow(3, $i)->getValue();
@@ -36,18 +36,24 @@ if (isset($_POST['submit'])) {
         $terms_of_delivery = $all_data->getCellByColumnAndRow(6, $i)->getValue();
         $project_id = get_projects_id($all_data->getCellByColumnAndRow(7, $i)->getValue());
         $customer_id = get_customer_id($all_data->getCellByColumnAndRow(8, $i)->getValue());
-        $desc_of_goods = $all_data->getCellByColumnAndRow(9, $i)->getValue();
 
-        $qty = $all_data->getCellByColumnAndRow(10, $i)->getValue();
-        $rate = $all_data->getCellByColumnAndRow(11, $i)->getValue();
-        $per = $all_data->getCellByColumnAndRow(12, $i)->getValue();
-        $amount = $all_data->getCellByColumnAndRow(13, $i)->getValue();
-        $taxable_value = $all_data->getCellByColumnAndRow(14, $i)->getValue();
-        $cgst_rate = $all_data->getCellByColumnAndRow(15, $i)->getValue();
-        $cgst_amnt = $all_data->getCellByColumnAndRow(16, $i)->getValue();
-        $sgst_rate = $all_data->getCellByColumnAndRow(17, $i)->getValue();
-        $sgst_amount = $all_data->getCellByColumnAndRow(18, $i)->getValue();
-        $total_tax_amount = $all_data->getCellByColumnAndRow(19, $i)->getValue();
+        $qty = $all_data->getCellByColumnAndRow(9, $i)->getValue();
+        $fixed_maint = $all_data->getCellByColumnAndRow(10, $i)->getValue();
+        $water_charges = $all_data->getCellByColumnAndRow(11, $i)->getValue();
+        $diesel_expenses = $all_data->getCellByColumnAndRow(12, $i)->getValue();
+        $meter_redg_curr = $all_data->getCellByColumnAndRow(13, $i)->getValue();
+        $meter_redg_pre = $all_data->getCellByColumnAndRow(14, $i)->getValue();
+
+        
+        $meter_redg_amount = $all_data->getCellByColumnAndRow(16, $i)->getValue();
+        $meter_fixed_amount = $all_data->getCellByColumnAndRow(17, $i)->getValue();
+        $common_power = $all_data->getCellByColumnAndRow(18, $i)->getValue();
+ 
+        $sgst_amount = $all_data->getCellByColumnAndRow(22, $i)->getValue();
+        $cgst_amnt = $all_data->getCellByColumnAndRow(23, $i)->getValue();
+        $total_amount = $all_data->getCellByColumnAndRow(26, $i)->getValue();
+        $two_percent = $all_data->getCellByColumnAndRow(27, $i)->getValue();
+        $after_due_date = $all_data->getCellByColumnAndRow(28, $i)->getValue();
 
         "<br>";
 
@@ -55,9 +61,9 @@ if (isset($_POST['submit'])) {
 
 
         // here can write the sql query for inserting the data in database
-        $query = "INSERT INTO `tbl_maintenance`(`m_id`,`invoice_no`,`invoice_date`,`bill_due_date`,`payment_terms`,`other_ref`,`terms_of_delivery`,`project_id`, `customer_id`, `desc_of_goods`, `qty`, `rate`, `per`, `amount`,
-                `taxable_value`,`cgst_rate`, `cgst_amnt`, `sgst_rate`, `sgst_amount`, `total_tax_amount`) 
-                                              VALUES ('','$invoice_no','$invoice_date','$bill_due_date','$payment_terms','$other_ref','$terms_of_delivery','$project_id','$customer_id','$desc_of_goods','$qty','$rate','$per','$amount','$taxable_value','$cgst_rate','$cgst_amnt','$sgst_rate','$sgst_amount','$total_tax_amount'
+        $query = "INSERT INTO `tbl_maintenance`(`m_id`,`invoice_no`,`invoice_date`,`bill_due_date`,`payment_terms`,`other_ref`,`terms_of_delivery`,`project_id`, `customer_id`,`qty`,`fixed_maint`,`water_charges`,`meter_redg_amount`,`meter_fixed_amount`, `common_power`, `diesel_expenses`,`meter_redg_curr`,`meter_redg_pre`
+               , `sgst_amount`,`cgst_amnt`,`two_percent`,`after_due_date`) 
+                                              VALUES ('','$invoice_no','$invoice_date','$bill_due_date','$payment_terms','$other_ref','$terms_of_delivery','$project_id','$customer_id','$qty','$fixed_maint','$water_charges','$meter_redg_amount','$meter_fixed_amount','$common_power','$diesel_expenses','$meter_redg_curr','$meter_redg_pre','$sgst_amount','$cgst_amnt','$total_amount','$two_percent','$after_due_date'
                                              )";
         $result = mysqli_query($connection, $query);
       }
