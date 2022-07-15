@@ -6,9 +6,6 @@ include './include/commonFuncs.php';
 require_once("application/classes-and-objects/config.php");
 require_once("application/classes-and-objects/veriables.php");
 include './framwork/main.php';
- 
-
-
 
 ?>
 
@@ -255,7 +252,7 @@ while ($result = mysqli_fetch_array($result1)) {
                                             <th rowspan="2">
                                                 <center>S.No</center>
                                             </th>
-                                            <th style="width: 20%;" rowspan="2" colspan="3">
+                                            <th style="width: 15%;" rowspan="2" colspan="3">
                                                 <center>Description Of Services</center>
                                             </th>
 
@@ -310,10 +307,10 @@ while ($result = mysqli_fetch_array($result1)) {
 
                                         <tr style="color:#6b0100;background-color:white">
                                             <th>
-                                                <center>Current</center>
+                                                <center>Curr</center>
                                             </th>
                                             <th>
-                                                <center>Previous</center>
+                                                <center>Pre</center>
                                             </th>
                                             <th>
                                                 <center>Rate</center>

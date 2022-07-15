@@ -37,7 +37,7 @@ include './framwork/main.php';
       margin-bottom: -18px;
     }
 
-    .global_vill h5{
+    .global_vill h5 {
       margin-bottom: -25px;
     }
   </style>
@@ -67,7 +67,7 @@ include './framwork/main.php';
 
   <!-- End Google Tag Manager -->
 </head>
-<?php 
+<?php
 $result1 = fetchResult('tbl_maintenance');
 while ($result = mysqli_fetch_array($result1)) {
 
@@ -116,7 +116,7 @@ while ($result = mysqli_fetch_array($result1)) {
                       <h5 style="color:#6b0100;text-align: center;"><b style="font-size: 16px !important;">112,First Floor,Ashiana Trade Center,Adityapur,Jamshedpur-831013</b></h5>
                       <h5 style="color:#6b0100;text-align: center;font-size:16px;"><b style="font-size: 16px !important;">Dist-Seraikella Kharsawan</b></h5>
                       <h5 style="color:#6b0100;text-align: center;font-size:16px;"><b style="font-size: 16px !important;">State Name - Jharkhand,Code:20</b></h5>
-                      <h5  style="color:#6b0100;text-align: center;font-size:16px;"><b style="font-size: 16px !important;">E-Mail : srinathservices05@gmail.com</b></h5>
+                      <h5 style="color:#6b0100;text-align: center;font-size:16px;"><b style="font-size: 16px !important;">E-Mail : srinathservices05@gmail.com</b></h5>
                     </td>
                   <?php  } ?>
 
@@ -450,7 +450,13 @@ while ($result = mysqli_fetch_array($result1)) {
             </div>
 
           </div>
-          
+          <form class="form-inline">
+            <button type="button" id="print" class="btn btn-success" onclick="myFunction()" style="margin-top: 33px; margin-left:1190px;">Print</button>
+
+
+            </button>
+
+          </form>
   </body>
   <br>
   <br>
@@ -502,4 +508,5 @@ while ($result = mysqli_fetch_array($result1)) {
 <script>
   myFunction();
 </script>
+
 </html>
