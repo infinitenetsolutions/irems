@@ -12,7 +12,7 @@ $auth = new AUTHENTICATION($databaseObj);
  
  
 if (isset($_POST['submit'])) {
-   echo "<pre>";
+   //echo "<pre>";
 
   $extention = $_FILES['doc']['name'];
   $extention = (pathinfo($extention))['extension'];
@@ -71,7 +71,6 @@ if (isset($_POST['submit'])) {
                                              )";
         $result = mysqli_query($connection, $query);
       }
-      print_r($_FILES); 
 
     }
 
