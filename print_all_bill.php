@@ -89,7 +89,7 @@ require_once("application/classes-and-objects/veriables.php");
                                 <?php
                                 $conn = mysqli_connect('localhost', 'root', '', 'srinathhomes_db_irmes');
 
-                                $sel = "SELECT * from `tbl_maintenance` where invoice_no=" . $_GET['invoice_no'] . " GROUP BY invoice_no";
+                                $sel = "SELECT * from `tbl_maintenance` ";
                                 $run = mysqli_query($conn, $sel);
                                 while ($result = mysqli_fetch_assoc($run)) {
 
@@ -173,7 +173,7 @@ require_once("application/classes-and-objects/veriables.php");
 
                         <?php
 
-                        $sel = "SELECT * from `tbl_maintenance` where invoice_no=" . $_GET['invoice_no'] . " GROUP BY invoice_no";
+                        $sel = "SELECT * from `tbl_maintenance` ";
                         //echo $sel;
                         $run = mysqli_query($conn, $sel);
                         while ($result = mysqli_fetch_assoc($run)) {
@@ -240,7 +240,7 @@ require_once("application/classes-and-objects/veriables.php");
 
                                 <?php
 
-                                $sel = "SELECT * from `tbl_maintenance` where invoice_no=" . $_GET['invoice_no'] . " GROUP BY invoice_no";
+                                $sel = "SELECT * from `tbl_maintenance` ";
                                 $run = mysqli_query($conn, $sel);
                                 while ($result = mysqli_fetch_assoc($run)) {
 
@@ -290,7 +290,7 @@ require_once("application/classes-and-objects/veriables.php");
 
                                     <?php
 
-                                    $sel = "SELECT * from `tbl_maintenance` where invoice_no=" . $_GET['invoice_no'] . "";
+                                    $sel = "SELECT * from `tbl_maintenance`";
                                     $run = mysqli_query($conn, $sel);
                                     while ($result = mysqli_fetch_assoc($run)) {
                                     }
@@ -394,7 +394,7 @@ require_once("application/classes-and-objects/veriables.php");
 
                                     <?php
 
-                                    $sel = "SELECT * from `tbl_maintenance` where invoice_no=" . $_GET['invoice_no'] . "";
+                                    $sel = "SELECT * from `tbl_maintenance`";
                                     $cnt = 1;
                                     $run = mysqli_query($conn, $sel);
                                     while ($result = mysqli_fetch_assoc($run)) {
@@ -429,7 +429,7 @@ require_once("application/classes-and-objects/veriables.php");
                                     }
 
                                     ?>
-                                <?php  $result = mysqli_query($conn, "SELECT * FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
+                                <?php  $result = mysqli_query($conn, "SELECT * FROM tbl_maintenance");
                                          $row = mysqli_fetch_assoc($result);
                                         ?>
                                     <tr align="center" style="border: solid thin; border-bottom-color: white;">
@@ -454,7 +454,7 @@ require_once("application/classes-and-objects/veriables.php");
 
                                 </table>
                                 <?php
-                                $result = mysqli_query($conn, "SELECT * FROM tbl_maintenance where invoice_no=" . $_GET['invoice_no'] . "");
+                                $result = mysqli_query($conn, "SELECT * FROM tbl_maintenance");
                                  $row = mysqli_fetch_assoc($result);
                              ?>
 
@@ -472,7 +472,7 @@ require_once("application/classes-and-objects/veriables.php");
 
                                         <?php
 
-                                        $sel = "SELECT * from `tbl_maintenance` where invoice_no=" . $_GET['invoice_no'] . " GROUP BY invoice_no";
+                                        $sel = "SELECT * from `tbl_maintenance` ";
                                         $run = mysqli_query($conn, $sel);
                                         while ($res = mysqli_fetch_assoc($run)) {
 
@@ -533,7 +533,7 @@ require_once("application/classes-and-objects/veriables.php");
                                         </td> -->
                                         <?php
 
-                                        $sel = "SELECT * from `tbl_maintenance` where invoice_no=" . $_GET['invoice_no'] . " GROUP BY invoice_no";
+                                        $sel = "SELECT * from `tbl_maintenance` ";
                                         $run = mysqli_query($conn, $sel);
                                         while ($res = mysqli_fetch_assoc($run)) {
 

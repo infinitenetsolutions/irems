@@ -20,7 +20,19 @@ if (isset($_POST["action"])) :
             // ------------ Fetch Data Section Start ---------
             // -----------------------------------------------
         case "fetchData":
+
+            
 ?>
+
+<form method="POST" action="print_all_bill">
+                    <!-- <input type="hidden" name="course_id" value="<?php //echo $course_id; ?>" />
+                    <input type="hidden" name="academic_year" value="<?php //echo $academic_year; ?>" />
+                    <input type="hidden" name="semester_id" value="<?php //echo $semester_id; ?>" /> -->
+                    <button type="submit" class="btn btn-lg btn-warning pull-right float-right">Print All</button>
+                </form>
+
+
+
             <form id="selectForm" method="POST" enctype="multipart/form-data" action="">
                 <input type="hidden" id="nameOfATable" name="nameOfATable" value="tbl_manage_employee">
                 <input type="hidden" id="action" name="action" value="exportSelectedData">

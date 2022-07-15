@@ -12,18 +12,22 @@ $auth = new AUTHENTICATION($databaseObj);
  
  
 if (isset($_POST['submit'])) {
+   echo "<pre>";
 
   $extention = $_FILES['doc']['name'];
   $extention = (pathinfo($extention))['extension'];
 
   if ($extention == 'xl' || $extention == "xls" || $extention == "xlsx" || $extention == "csv") {
+
     require('./PHPExcel/PHPExcel.php');
     require('./PHPExcel/PHPExcel/IOFactory.php');
     $doc_name = $_FILES['doc']['tmp_name'];
     $obj = PHPExcel_IOFactory::load($doc_name);
+
     foreach ($obj->getWorksheetIterator() as $all_data) {
       // all data is the associtive array in the all the data of the excel file
       $number_of_row = $all_data->getHighestRow();
+
       for ($i = 2; $i <= $number_of_row; $i++) {
         // here 0 and 1 is the number of index or colunmn in excel file 
         // $i is th number of data in rows 
@@ -61,12 +65,14 @@ if (isset($_POST['submit'])) {
 
 
         // here can write the sql query for inserting the data in database
-        $query = "INSERT INTO `tbl_maintenance`(`m_id`,`invoice_no`,`invoice_date`,`bill_due_date`,`payment_terms`,`other_ref`,`terms_of_delivery`,`project_id`, `customer_id`,`qty`,`fixed_maint`,`water_charges`,`meter_redg_amount`,`meter_fixed_amount`, `common_power`, `diesel_expenses`,`meter_redg_curr`,`meter_redg_pre`
-               , `sgst_amount`,`cgst_amnt`,`two_percent`,`after_due_date`) 
+       echo  $query = "INSERT INTO `tbl_maintenance`(`m_id`,`invoice_no`,`invoice_date`,`bill_due_date`,`payment_terms`,`other_ref`,`terms_of_delivery`,`project_id`, `customer_id`,`qty`,`fixed_maint`,`water_charges`,`meter_redg_amount`,`meter_fixed_amount`, `common_power`, `diesel_expenses`,`meter_redg_curr`,`meter_redg_pre`
+               , `sgst_amount`,`cgst_amnt`,`total_amount`,`two_percent`,`after_due_date`) 
                                               VALUES ('','$invoice_no','$invoice_date','$bill_due_date','$payment_terms','$other_ref','$terms_of_delivery','$project_id','$customer_id','$qty','$fixed_maint','$water_charges','$meter_redg_amount','$meter_fixed_amount','$common_power','$diesel_expenses','$meter_redg_curr','$meter_redg_pre','$sgst_amount','$cgst_amnt','$total_amount','$two_percent','$after_due_date'
                                              )";
         $result = mysqli_query($connection, $query);
       }
+      print_r($_FILES); 
+
     }
 
 
