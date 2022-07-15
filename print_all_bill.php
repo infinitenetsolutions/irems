@@ -67,9 +67,9 @@ include './framwork/main.php';
 
   <!-- End Google Tag Manager -->
 </head>
-<?php $result1 = fetchResult('tbl_maintenance');
+<?php 
+$result1 = fetchResult('tbl_maintenance');
 while ($result = mysqli_fetch_array($result1)) {
-
 
 ?>
 
@@ -116,7 +116,7 @@ while ($result = mysqli_fetch_array($result1)) {
                       <h5 style="color:#6b0100;text-align: center;"><b style="font-size: 16px !important;">112,First Floor,Ashiana Trade Center,Adityapur,Jamshedpur-831013</b></h5>
                       <h5 style="color:#6b0100;text-align: center;font-size:16px;"><b style="font-size: 16px !important;">Dist-Seraikella Kharsawan</b></h5>
                       <h5 style="color:#6b0100;text-align: center;font-size:16px;"><b style="font-size: 16px !important;">State Name - Jharkhand,Code:20</b></h5>
-                      <h5  style="color:#6b0100;text-align: center;font-size:16px;     "><b style="font-size: 16px !important;">E-Mail : srinathservices05@gmail.com</b></h5>
+                      <h5  style="color:#6b0100;text-align: center;font-size:16px;"><b style="font-size: 16px !important;">E-Mail : srinathservices05@gmail.com</b></h5>
                     </td>
                   <?php  } ?>
 
