@@ -130,3 +130,4 @@ function get_customer_id($cus_name)
       return $rows['customer_id'];    
   }
 }
+ 
