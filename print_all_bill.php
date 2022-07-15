@@ -450,13 +450,7 @@ while ($result = mysqli_fetch_array($result1)) {
             </div>
 
           </div>
-          <form class="form-inline">
-            <button type="button" id="print" class="btn btn-success" onclick="myFunction()" style="margin-top: 33px; margin-left:1190px;">Print</button>
-
-
-            </button>
-
-          </form>
+          
   </body>
   <br>
   <br>
