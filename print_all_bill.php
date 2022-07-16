@@ -233,7 +233,7 @@ while ($result = mysqli_fetch_array($result1)) {
                         <center>Amount</center>
                       </th>
                       <th rowspan="2">
-                        <center>Water Charges</center>
+                        <center>Water Chrg.</center>
                       </th>
 
                       <th rowspan="2">
@@ -247,9 +247,12 @@ while ($result = mysqli_fetch_array($result1)) {
                       <th colspan="2">
                         <center>Meter Redg.</center>
                       </th>
-                      <th colspan="2">
-                        <center>CGST</center>
-                      </th>
+                      <?php if ($result['project_id'] == '10') {  ?>
+
+                        <th colspan="2">
+                          <center>CGST</center>
+                        </th>
+                      <?php } ?>
                       <th colspan="2">
                         <center>SGST<center>
                       </th>
@@ -270,17 +273,20 @@ while ($result = mysqli_fetch_array($result1)) {
 
                     <tr style="color:#6b0100;background-color:white">
                       <th>
-                        <center>Current</center>
+                        <center>Curr</center>
                       </th>
                       <th>
-                        <center>Previous</center>
+                        <center>Pre</center>
                       </th>
-                      <th>
-                        <center>Rate</center>
-                      </th>
-                      <th>
-                        <center>Amount</center>
-                      </th>
+                      <?php if ($result['project_id'] == '10') {  ?>
+
+                        <th>
+                          <center>Rate</center>
+                        </th>
+                        <th>
+                          <center>Amount</center>
+                        </th>
+                      <?php } ?>
                       <th>
                         <center>Rate</center>
                       </th>
@@ -317,8 +323,12 @@ while ($result = mysqli_fetch_array($result1)) {
 
                       <td style="font-family:arial !important;">9%</td>
                       <td style="font-family:arial !important;"><?php echo $result['sgst_amount'] ?></td>
-                      <td style="font-family:arial !important;">9%</td>
-                      <td style="font-family:arial !important;"><?php echo $result['cgst_amnt'] ?></td>
+                      <?php if ($result['project_id'] == '10') {  ?>
+
+                        <td style="font-family:arial !important;">9%</td>
+                        <td style="font-family:arial !important;"><?php echo $result['cgst_amnt'] ?></td>
+                      <?php } ?>
+
 
                       <td style="font-family:arial !important;"><?php echo round($result['total_amount'], 2)  ?>.00</td>
                     </tr>
@@ -339,9 +349,17 @@ while ($result = mysqli_fetch_array($result1)) {
                       <td colspan="1"><b></b></td>
                       <td colspan="1"><b></b></td>
                       <td colspan="1"><b></b></td>
-                      <td colspan="1"><b></b></td>
-                      <td colspan="1"><b></b></td>
-                      <td colspan="1"><b><?php echo $result['total_amount'] ?></b>.00</b></td>
+                      <?php if ($result['project_id'] != '10') {  ?>
+
+                        <td colspan="1"><b><?php echo $result['total_amount'] ?>.00</b></td>
+                      <?php } ?>
+                      <?php if ($result['project_id'] == '10') {  ?>
+
+
+                        <td colspan="1"><b></b></td>
+                        <td colspan="1"><b></b></td>
+                        <td colspan="1"><b><b><?php echo $result['total_amount'] ?>.00</b></b></td>
+                      <?php } ?>
                     </tr>
 
 
