@@ -1,7 +1,7 @@
 <!-- Role Management -->
-<?php 
-    $page_no = 1;
-    $page_no_inside = "1_1";
+<?php
+$page_no = 1;
+$page_no_inside = "1_1";
 ?>
 <?php require_once("include/auth.php"); ?>
 <!DOCTYPE html>
@@ -10,12 +10,13 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title><?php if($setting->setting_firm_info->firm_nick_name != "") echo $setting->setting_firm_info->firm_nick_name; else echo $setting->setting_firm_info->firm_name; ?> | Role Management</title>
+    <title><?php if ($setting->setting_firm_info->firm_nick_name != "") echo $setting->setting_firm_info->firm_nick_name;
+            else echo $setting->setting_firm_info->firm_name; ?> | Role Management</title>
     <!-- Css Section Start -->
     <?php require_once("include/css.php"); ?>
     <!-- Css Section End -->
     <style>
-        .select2-container--default .select2-selection--single{
+        .select2-container--default .select2-selection--single {
             height: calc(1.8125rem + 2px);
             padding: .25rem .5rem;
             font-size: .875rem;
@@ -139,19 +140,19 @@
                                                 <label for="roleName">Select Employee</label>
                                                 <select id="roleName" name="roleName" class="form-control form-control-sm select2 select2-navy" data-dropdown-css-class="select2-navy" onchange="run(this);">
                                                     <option disabled selected>Select</option>
-                                                    <?php 
-                                                        $databaseObj->select("tbl_manage_employee");
-                                                        $databaseObj->where("`status` = '".$auth->visible()."'");
-                                                        $getData = $databaseObj->get();
-                                                        //Checking If Data Is Available
-                                                        if($getData != 0):
-                                                            foreach($getData as $rows):
-                                                                $manage_employee_info = json_decode($rows["manage_employee_info"]);
-                                                                ?>
-                                                                <option value="<?= ucwords(strtolower($manage_employee_info->firstName." ".$manage_employee_info->lastName)) ?>" data-row-id="<?= $rows["manage_employee_id"] ?>" data-contact-number="<?= $manage_employee_info->mobile ?>" data-email="<?= $manage_employee_info->email ?>" data-gender="<?= $manage_employee_info->gender ?>" data-address="<?= $manage_employee_info->address1 ?>" data-project="<?= $manage_employee_info->project ?>"><?= ucwords(strtolower($manage_employee_info->firstName." ".$manage_employee_info->lastName)) ?></option>
-                                                                <?php
-                                                            endforeach;
-                                                        endif;
+                                                    <?php
+                                                    $databaseObj->select("tbl_manage_employee");
+                                                    $databaseObj->where("`status` = '" . $auth->visible() . "'");
+                                                    $getData = $databaseObj->get();
+                                                    //Checking If Data Is Available
+                                                    if ($getData != 0) :
+                                                        foreach ($getData as $rows) :
+                                                            $manage_employee_info = json_decode($rows["manage_employee_info"]);
+                                                    ?>
+                                                            <option value="<?= ucwords(strtolower($manage_employee_info->firstName . " " . $manage_employee_info->lastName)) ?>" data-row-id="<?= $rows["manage_employee_id"] ?>" data-contact-number="<?= $manage_employee_info->mobile ?>" data-email="<?= $manage_employee_info->email ?>" data-gender="<?= $manage_employee_info->gender ?>" data-address="<?= $manage_employee_info->address1 ?>" data-project="<?= $manage_employee_info->project ?>"><?= ucwords(strtolower($manage_employee_info->firstName . " " . $manage_employee_info->lastName)) ?></option>
+                                                    <?php
+                                                        endforeach;
+                                                    endif;
                                                     ?>
                                                 </select>
                                             </div>
@@ -184,23 +185,23 @@
                                     </div>
                                 </div>
                             </div>
-                           <!--  <div class="card card-navy">
+                            <!--  <div class="card card-navy">
                                 <div class="card-header">
                                     <h3 class="card-title">Project</h3>
                                 </div> -->
-                                <!-- <div class="card-body"> 
+                            <!-- <div class="card-body"> 
                                    <div class="card"> -->
-                                        
-                                        <!-- <div class="card-body"> -->
-<!--                                             <div class="row"> -->
-<!--                                                <div class="col-md-6">
+
+                            <!-- <div class="card-body"> -->
+                            <!--                                             <div class="row"> -->
+                            <!--                                                <div class="col-md-6">
                                                   <div class="form-group">
                                                      <label for="projectName">Project</label>
                                                      <input type="text" class="form-control form-control-sm" id="projectName" name="projectName"  value="none" readonly>
 
                                                   </div>
                                                </div> -->
-                                               <!-- <div class="col-md-3">
+                            <!-- <div class="col-md-3">
                                                   <div class="form-group">
                                                      <label for="commit_edit">Edit</label>
                                                      <select class="form-control select2 select2-navy" data-dropdown-css-class="select2-navy" id="commit_edit" name="commit_edit">
@@ -211,7 +212,7 @@
                                                   </div>
                                                </div> -->
 
-                                              <!--  <div class="col-md-3">
+                            <!--  <div class="col-md-3">
                                                   <div class="form-group">
                                                      <label for="commit_delete">Delete</label>
                                                      
@@ -223,11 +224,11 @@
                                                      </select>
                                                   </div>
                                                </div> -->
-                                              
-                                           <!--  </div> -->
-                                       <!--  </div> -->
 
-                                    <!-- </div> -->
+                            <!--  </div> -->
+                            <!--  </div> -->
+
+                            <!-- </div> -->
                             <div class="card card-navy">
                                 <div class="card-header">
                                     <h3 class="card-title">Select Authentication</h3>
@@ -1654,7 +1655,7 @@
                                                                     </div>
                                                                 </td>
                                                             </tr>
-                                                             <tr>
+                                                            <tr>
                                                                 <td>9. </td>
                                                                 <td>
                                                                     <div style="width: 200px">
@@ -2593,29 +2594,29 @@
                                                                         <label for="information-menu-9-2"></label>
                                                                     </div>
                                                                 </td>
-                                                              
-                                                              
-                                                              
-                                                              
+
+
+
+
                                                             </tr>
-                                                          
-                                                          
-                                                          
-                                                          
+
+
+
+
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                  
-                                 <div class="card">
+
+                                    <div class="card">
                                         <div class="card-header">
                                             <div class="icheck-navy d-inline">
                                                 <input type="checkbox" class="menu-checkbox" id="check-menu-10" name="page_no_10">
                                                 <input type="hidden" name="check_page_no_10" value="2">
                                                 <label for="check-menu-10">
-                                                   CRM
+                                                    CRM
                                                 </label>
                                             </div>
                                             <div class="card-tools">
@@ -2633,7 +2634,7 @@
                                                                 <th>Sub Menu</th>
                                                                 <th>Auth</th>
                                                                 <!--<th>Add</th>-->
-                                                               <!--  <th>View</th>
+                                                                <!--  <th>View</th>
                                                                 <th>Edit</th>
                                                                 <th>Delete</th>
                                                                 <th>Import</th>
@@ -2655,29 +2656,83 @@
                                                                         <label for="check-menu-10-1"></label>
                                                                     </div>
                                                                 </td>
-                                                               <!-- <td>
+                                                                <!-- <td>
                                                                     <div class="icheck-navy d-inline">
                                                                         <input type="checkbox" class="sub-menu-checkbox" id="add-menu-10-1" name="page_no_10_1_add">
                                                                         <label for="add-menu-10-1"></label>
                                                                     </div>
                                                                 </td>-->
-                                                              
+
                                                             </tr>
-                                                           
+
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> 
-                                  
-                                  
-                                  
-                                  
-                                  
-                                  
-                                  
-                                  
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="icheck-navy d-inline">
+                                                <input type="checkbox" class="menu-checkbox" id="check-menu-12" name="page_no_12">
+                                                <input type="hidden" name="check_page_no_12" value="12">
+                                                <label for="check-menu-12">
+                                                    Maintainance
+                                                </label>
+                                            </div>
+                                            <div class="card-tools">
+                                                <button type="button" class="btn btn-tool" data-card-widget="maximize"><i class="fas fa-expand text-navy"></i></button>
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus text-navy"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-12 table-responsive">
+                                                    <table class="table table-bordered table-hover table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>S.No</th>
+                                                                <th>Sub Menu</th>
+                                                                <th>Auth</th>
+                                                                <!--<th>Add</th>-->
+                                                                <!--  <th>View</th>
+                                                                <th>Edit</th>
+                                                                <th>Delete</th>
+                                                                <th>Import</th>
+                                                                <th>Export</th>
+                                                                <th>Information</th> -->
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>1. </td>
+                                                                <td>
+                                                                    <div style="width: 200px">
+                                                                        Manage Maintainance
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="icheck-navy d-inline">
+                                                                        <input type="checkbox" class="auth-checkbox sub-menu-checkbox" id="check-menu-12" name="page_no_12_auth">
+                                                                        <label for="check-menu-12"></label>
+                                                                    </div>
+                                                                </td>
+                                                               
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+
                                 </div>
                             </div>
                         </div>
@@ -2878,7 +2933,7 @@
     <!-- ./wrapper -->
     <!-- Js Section Start -->
     <?php require_once("include/js.php"); ?>
-    
+
     <script src="dist/js/ajax.js"></script>
     <script src="dist/js/admin/manage-role.js"></script>
     <!-- Js Section End -->

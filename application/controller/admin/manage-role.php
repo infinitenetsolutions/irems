@@ -32,7 +32,7 @@
                         // page_no_4_2_import
                         // page_no_4_2_export
                         // page_no_4_2_information
-                        for($i = 1; $i <= 10; $i++):
+                        for($i = 1; $i <= 12; $i++):
                             if(isset($_POST["page_no_". $i])):
                                 $submenu = array();
                                 for($j = 1; $j <= intval($_POST["check_page_no_". $i]); $j++):
@@ -231,8 +231,8 @@
             case "editData":
            
                 if($authority == 1):
-                   echo "<pre>";
-                   print_r($_POST);
+                  // echo "<pre>";
+                  // print_r($_POST);
                     if(!empty($_POST["editRoleUsername"] && $_POST["editRoleName"] && $_POST["editRoleContactNumber"] && $_POST["editRoleEmail"] && $_POST["editRoleGender"] && $_POST["editRoleAddress"] && $_POST["editRoleAddress"] )):
                         $databaseObj->select("tbl_admin");
                         $databaseObj->where("`status` = '".$auth->visible()."' && `admin_id` = '".$_POST["editTableId"]."'");
@@ -247,7 +247,7 @@
                             endforeach;
                             if(!empty($_POST["editRoleUsername"])):
                                 $auth_st = array();
-                                for($i = 1; $i <= 10; $i++):
+                                for($i = 1; $i <= 12; $i++):
                                     if(isset($_POST["edit_page_no_". $i])):
                                         $submenu = array();
                                         for($j = 1; $j <= intval($_POST["check_page_no_". $i]); $j++):

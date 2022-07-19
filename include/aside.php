@@ -459,20 +459,19 @@
                         </li>
 
 
-                        <li class="nav-item has-treeview display-none data-page-class" data-page="page_no_11">
-                            <a href="maintainance" class="nav-link <?php if($page_no == "11"){ echo 'active'; } ?>" target="_blank">
+                        <!-- <li class="nav-item has-treeview display-none data-page-class" data-page="page_no_12">
+                            <a href="maintainance" class="nav-link <?php if($page_no == "12"){ echo 'active'; } ?>" target="_blank">
                                 <i class="nav-icon fa fa-cogs"></i>
                                 <p>
                                     Maintenance
                                 </p>
                            </a>
-                        </li>
+                        </li> -->
 
 
                         <li class="nav-item has-treeview display-none data-page-class" data-page="page_no_12">
                             <a href="manage-maintainance" class="nav-link <?php if($page_no == "12"){ echo 'active'; } ?>" target="_blank">
-                            <i class="nav-icon fas fa-poll-h"></i>
-                                <p>
+                                 <p>
                                     Manage Maintenance
                                 </p>
                            </a>
