@@ -141,6 +141,7 @@ $(function(){
         });
         if(flag == 1){
             var formData = new FormData($('form#addPropertiesForm')[0]);
+            console.log(formData);
             formData.append("checkLocation", $("#checkLocation").val());
             formData.append("checkIp", $("#checkIp").val());
             formData.append("action", "addPropertiesData");
@@ -194,6 +195,7 @@ $(function(){
         });
         if(flag == 1){
             var formData = new FormData($('form#editPropertiesForm')[0]);
+            console.log(formData);
             formData.append("checkLocation", $("#checkLocation").val());
             formData.append("checkIp", $("#checkIp").val());
             formData.append("action", "editPropertiesData");

@@ -9,6 +9,7 @@
     $randSix = $auth->randSix();
     $authority = 1;
     $projectsDir = "../../../assets/admin/projects/";
+  
     if(isset($_POST["action"])):
         // -----------------------------------
         // ------------ Switch Start ---------
@@ -121,6 +122,7 @@
                 endif;
                 break;
             case "addPropertiesData":
+               
                 if($authority == 1):
                     if(!empty($_POST["phase"] && $_POST["building"] && $_POST["floor"]) && isset($_POST["properties_project_id"])):
                         $flag = 1;
@@ -208,11 +210,11 @@
             // ------------ Edit Data Section Start ----------
             // -----------------------------------------------
             case "editPropertiesData":
+               
                 if($authority == 1):
+                    
                     if(!empty($_POST["edit_phase"] && $_POST["edit_building"] && $_POST["edit_floor"])):
-                        // echo "<pre>";
-                        // print_r($_POST);
-                        //  exit;
+                         
                         $flag = 1;
                         $errorMessage = "Please fill out the required fields";
                         $property_details = array();
@@ -220,7 +222,8 @@
                         for($i = 1; $i <= intval($_POST["edit_floor"]); $i++):
                             $index = ($i - 1);
                             $flatArray = array();
-                            for($y = 0; $y < is_countable($_POST["edit_flat_no_". $i]); $y++):
+
+                            for($y = 0; $y < count($_POST["edit_flat_no_".$i]); $y++):
                                 array_push($flatArray,   array(
                                                             "flat_no"                   =>      $_POST["edit_flat_no_". $i][$y],
                                                             "property_type"             =>      $_POST["edit_property_type_". $i][$y],
